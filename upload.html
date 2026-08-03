@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="yi" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sidecut — Upload</title>
+<title>אַרויפֿלאָדן — חסידישע ניגונים סטרימינג</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&amp;family=Heebo:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#14110F;
@@ -22,10 +22,10 @@
   html,body{height:100%;}
   body{
     background:
-      radial-gradient(ellipse at top left, rgba(232,163,61,0.06), transparent 55%),
+      radial-gradient(ellipse at top right, rgba(232,163,61,0.06), transparent 55%),
       var(--bg);
     color:var(--text);
-    font-family:'Inter', sans-serif;
+    font-family:'Heebo', sans-serif;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
@@ -37,14 +37,14 @@
     display:flex; align-items:center; justify-content:space-between;
     margin-bottom:40px; border-bottom:1px solid var(--line); padding-bottom:22px;
   }
-  .brand{ font-family:'Fraunces', serif; font-weight:700; font-size:26px; letter-spacing:-0.01em; }
-  .brand span{ color:var(--gold); font-style:italic; font-weight:500; }
+  .brand{ font-family:'Frank Ruhl Libre', serif; font-weight:700; font-size:24px; }
+  .brand span{ color:var(--gold); font-weight:500; }
   .tagline{
     font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
-    letter-spacing:0.08em; text-transform:uppercase; margin-top:2px;
+    letter-spacing:0.02em; margin-top:4px;
   }
   .back-link{
-    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.04em; text-transform:uppercase;
+    font-family:'Heebo', sans-serif; font-weight:600; font-size:13px;
     color:var(--text); text-decoration:none;
     border:1px solid var(--line); padding:9px 16px; border-radius:7px;
     display:inline-flex; align-items:center; gap:8px;
@@ -54,29 +54,23 @@
   .back-link svg{ width:13px; height:13px; }
 
   h1.section-title{
-    font-family:'Fraunces', serif; font-style:italic; font-weight:500; font-size:20px;
+    font-family:'Frank Ruhl Libre', serif; font-weight:700; font-size:19px;
     margin-bottom:16px;
   }
 
-  .field{ margin-bottom:22px; }
+  .field{ margin-bottom:26px; }
   .field label{
-    display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.06em;
-    text-transform:uppercase; color:var(--muted); margin-bottom:8px;
+    display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.02em;
+    color:var(--muted); margin-bottom:8px;
   }
-  .folder-input-row{ display:flex; gap:10px; }
-  input[type=text], select{
+  select{
+    width:100%;
     background:var(--surface); border:1px solid var(--line); color:var(--text);
-    font-family:'Inter', sans-serif; font-size:14px;
-    padding:11px 14px; border-radius:8px; outline:none;
+    font-family:'Heebo', sans-serif; font-size:14.5px; font-weight:500;
+    padding:12px 14px; border-radius:8px; outline:none; cursor:pointer;
     transition:border-color .15s;
   }
-  input[type=text]:focus, select:focus{ border-color:var(--gold); }
-  select{ cursor:pointer; }
-  .folder-input-row input[type=text]{ flex:1; }
-  .or-chip{
-    font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--muted);
-    align-self:center; text-transform:uppercase; letter-spacing:0.05em;
-  }
+  select:focus{ border-color:var(--gold); }
 
   .upload-zone{
     border:1px dashed var(--line); border-radius:10px; padding:34px 20px;
@@ -85,8 +79,8 @@
   }
   .upload-zone:hover, .upload-zone.drag{ border-color:var(--gold); background:rgba(232,163,61,0.05); }
   .upload-zone svg{ width:22px; height:22px; color:var(--gold); margin-bottom:10px; }
-  .upload-zone p{ font-size:13px; color:var(--muted); line-height:1.6; }
-  .upload-zone strong{ color:var(--text); font-weight:500; }
+  .upload-zone p{ font-size:13.5px; color:var(--muted); line-height:1.7; }
+  .upload-zone strong{ color:var(--text); font-weight:600; }
   #file-input{ display:none; }
 
   .queue{ margin-top:24px; }
@@ -96,9 +90,7 @@
     margin-bottom:8px; font-size:13.5px;
   }
   .queue-item-name{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; }
-  .queue-item-status{
-    font-family:'IBM Plex Mono', monospace; font-size:10.5px; flex-shrink:0;
-  }
+  .queue-item-status{ font-family:'IBM Plex Mono', monospace; font-size:10.5px; flex-shrink:0; }
   .status-pending{ color:var(--muted); }
   .status-done{ color:var(--teal); }
 
@@ -108,6 +100,46 @@
     color:var(--teal); font-size:13.5px; display:none;
   }
   .toast a{ color:var(--gold); text-decoration:none; border-bottom:1px solid rgba(232,163,61,0.4); }
+
+  footer.site-footer{
+    margin-top:60px; padding-top:22px; border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--muted);
+    line-height:2;
+  }
+  footer.site-footer a{ color:var(--gold); text-decoration:none; border-bottom:1px solid rgba(232,163,61,0.35); }
+
+  /* ---- lock screen ---- */
+  #lock-screen{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:28px;
+  }
+  .lock-box{
+    width:100%; max-width:340px; text-align:center;
+  }
+  .lock-box .brand{ justify-content:center; display:flex; margin-bottom:6px; }
+  .lock-sub{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted);
+    margin-bottom:28px;
+  }
+  .lock-form{ display:flex; flex-direction:column; gap:12px; }
+  #lock-password{
+    background:var(--surface); border:1px solid var(--line); color:var(--text);
+    font-family:'Heebo', sans-serif; font-size:14.5px;
+    padding:12px 14px; border-radius:8px; outline:none; text-align:center;
+    transition:border-color .15s;
+  }
+  #lock-password:focus{ border-color:var(--gold); }
+  .lock-submit{
+    background:var(--gold); color:var(--bg); border:none;
+    font-family:'Heebo', sans-serif; font-weight:700; font-size:14px;
+    padding:12px 14px; border-radius:8px; cursor:pointer;
+    transition:opacity .15s;
+  }
+  .lock-submit:hover{ opacity:0.9; }
+  .lock-error{
+    color:var(--red); font-size:12.5px; min-height:16px; margin-top:2px;
+  }
+  #app{ display:none; }
 </style>
 <style type="text/css" nonce="">
 .redacted {
@@ -115,40 +147,111 @@
 }</style></head>
 <body>
 
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="brand">חסידישע ניגונים <span>סטרימינג</span></div>
+    <div class="lock-sub">דער בלאט איז נאר פֿאר דעם פֿארוואלטער</div>
+    <form class="lock-form" id="lock-form">
+      <input type="password" id="lock-password" placeholder="פּאַראָל" autocomplete="off">
+      <button type="submit" class="lock-submit">אַרײַן</button>
+      <div class="lock-error" id="lock-error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app">
 <div class="wrap">
   <header class="top">
     <div>
-      <div class="brand">side<span>cut</span></div>
-      <div class="tagline">add records to the shelf</div>
+      <div class="brand">חסידישע ניגונים <span>סטרימינג</span></div>
+      <div class="tagline">לייגט צו ניגונים אין דעם קאלעקשאן</div>
     </div>
     <a class="back-link" href="index.html">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5m0 0 7 7m-7-7 7-7"></path></svg>
-      Back to stream
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14m0 0-7-7m7 7-7 7"></path></svg>
+      צוריק צום סטרים
     </a>
   </header>
 
-  <h1 class="section-title">Choose a folder</h1>
+  <h1 class="section-title">קלייבט א קאטעגאריע</h1>
   <div class="field">
-    <label>Existing folder</label>
+    <label>קאטעגאריע</label>
     <select id="folder-select">
-      <option value="">— none yet —</option>
+      <optgroup label="הויפט קאטעגאריעס">
+        <option value="אלגעמיינע קאלעקשאן">אלגעמיינע קאלעקשאן</option>
+        <option value="לעבעדיגע ניגונים">לעבעדיגע ניגונים</option>
+        <option value="שטאטע ניגונים">שטאטע ניגונים</option>
+        <option value="בלויז מוזיק">בלויז מוזיק</option>
+        <option value="וואקאליש">וואקאליש</option>
+      </optgroup>
+      <optgroup label="מועדים וזמנים">
+        <option value="שבת קודש">שבת קודש</option>
+        <option value="מוצאי שבת">מוצאי שבת</option>
+        <option value="ראש חודש">ראש חודש</option>
+        <option value="ימים נוראים">ימים נוראים</option>
+        <option value="סוכות">סוכות</option>
+        <option value="חנוכה">חנוכה</option>
+        <option value="פורים">פורים</option>
+        <option value="פסח">פסח</option>
+        <option value="ל״ג בעומר">ל״ג בעומר</option>
+        <option value="שבועות">שבועות</option>
+        <option value="בין המצרים">בין המצרים</option>
+      </optgroup>
     </select>
   </div>
-  <div class="field">
-    <label>Or type a new folder name</label>
-    <input type="text" id="folder-new" placeholder="e.g. Late Night Drives">
-  </div>
 
-  <h1 class="section-title">Add files</h1>
+  <h1 class="section-title">לייגט צו פֿיילן</h1>
   <label class="upload-zone" id="drop-zone" for="file-input">
     <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"></path></svg>
-    <p><strong>Drop audio files here</strong><br>or click to browse — they'll upload straight into the folder above</p>
+    <p><strong>ציט אַהער אודיא פֿיילן</strong><br>אָדער קליקט צו בלעטערן — זיי וועלן זיך אַרויפֿלאָדן גלייך אין דעם קאטעגאריע אויבן</p>
     <input type="file" id="file-input" accept="audio/*" multiple>
   </label>
 
   <div class="queue" id="queue"></div>
-  <div class="toast" id="toast">Saved. <a href="index.html">Go stream it →</a></div>
+  <div class="toast" id="toast">געראטעוועט. <a href="index.html">גיין הערן ←</a></div>
+
+  <footer class="site-footer">
+    <div>פראיעקט דורך <a href="https://oitzerhanigunim.org/" target="_blank" rel="noopener">אוצר הניגונים</a></div>
+    <div>געברענגט צו אייך דורך <a href="mailto:music@koilos.org">music@koilos.org</a></div>
+  </footer>
 </div>
+</div>
+
+<script>
+(function(){
+  // Soft client-side gate only — the password below is visible to anyone
+  // who views this page's source. It keeps casual visitors out, not a
+  // determined one. Change PASSWORD to whatever you like before publishing.
+  const PASSWORD = 'nigun5784';
+  const lockScreen = document.getElementById('lock-screen');
+  const app        = document.getElementById('app');
+  const lockForm   = document.getElementById('lock-form');
+  const lockInput  = document.getElementById('lock-password');
+  const lockError  = document.getElementById('lock-error');
+
+  function unlock(){
+    lockScreen.style.display = 'none';
+    app.style.display = 'block';
+    sessionStorage.setItem('sidecut-upload-unlocked', '1');
+  }
+
+  if (sessionStorage.getItem('sidecut-upload-unlocked') === '1'){
+    unlock();
+  } else {
+    lockInput.focus();
+  }
+
+  lockForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (lockInput.value === PASSWORD){
+      unlock();
+    } else {
+      lockError.textContent = 'פֿאַלש פּאַראָל, פּרוּווט נאָך אַ מאָל';
+      lockInput.value = '';
+      lockInput.focus();
+    }
+  });
+})();
+</script>
 
 <script>
 (function(){
@@ -169,15 +272,6 @@
     });
   }
 
-  function getAllTracks(db){
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, 'readonly');
-      const req = tx.objectStore(STORE).getAll();
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
   function addTrack(db, track){
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE, 'readwrite');
@@ -190,7 +284,6 @@
   function niceName(filename){ return filename.replace(/\.[^/.]+$/, ''); }
 
   const folderSelect = document.getElementById('folder-select');
-  const folderNew     = document.getElementById('folder-new');
   const dropZone       = document.getElementById('drop-zone');
   const fileInput        = document.getElementById('file-input');
   const queueEl            = document.getElementById('queue');
@@ -198,32 +291,19 @@
 
   let db;
 
-  async function loadFolders(){
-    const all = await getAllTracks(db);
-    const names = [...new Set(all.map(t => t.folder || 'Unsorted'))].sort((a,b) => a.localeCompare(b));
-    folderSelect.innerHTML = '<option value="">— none yet —</option>' +
-      names.map(n => `<option value="${n}">${n}</option>`).join('');
-  }
-
-  function currentFolderName(){
-    const typed = folderNew.value.trim();
-    if (typed) return typed;
-    if (folderSelect.value) return folderSelect.value;
-    return 'Unsorted';
-  }
-
   async function handleFiles(fileList){
     const files = Array.from(fileList).filter(f => f.type.startsWith('audio/'));
     if (!files.length) return;
-    const folder = currentFolderName();
+    const folder = folderSelect.value;
 
     queueEl.innerHTML = '';
+    toast.style.display = 'none';
     const rows = files.map(f => {
       const row = document.createElement('div');
       row.className = 'queue-item';
       row.innerHTML = `
         <span class="queue-item-name">${f.name}</span>
-        <span class="queue-item-status status-pending">saving…</span>
+        <span class="queue-item-status status-pending">ראטעוועט…</span>
       `;
       queueEl.appendChild(row);
       return row;
@@ -238,15 +318,12 @@
         addedAt: Date.now()
       });
       const statusEl = rows[i].querySelector('.queue-item-status');
-      statusEl.textContent = 'saved';
+      statusEl.textContent = 'געראטעוועט';
       statusEl.classList.remove('status-pending');
       statusEl.classList.add('status-done');
     }
 
     toast.style.display = 'block';
-    await loadFolders();
-    folderSelect.value = folder;
-    folderNew.value = '';
   }
 
   fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
@@ -263,7 +340,6 @@
 
   (async function init(){
     db = await openDB();
-    await loadFolders();
   })();
 })();
 
