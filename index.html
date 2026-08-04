@@ -1,382 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="yi" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nocturne — Late Night Radio</title>
+<title>ניגונים — חסידישע ניגונים סטרימינג</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&amp;family=Inter:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0B0F1A;
-    --surface: #131A2B;
-    --surface-2: #1B2438;
-    --line: #262F45;
-    --amber: #E8A33D;
-    --amber-dim: #B87F2E;
-    --text: #F2EFE9;
-    --text-muted: #8B93A7;
-    --text-faint: #545F7A;
+    --bg: #1A120B;
+    --surface: #241811;
+    --surface-2: #2E1F15;
+    --line: #3A2A1C;
+    --gold: #C89B3C;
+    --gold-bright: #E4BC5C;
+    --gold-dim: #8F6B24;
+    --wine: #8A3A34;
+    --text: #F3E9DA;
+    --text-muted: #B8A488;
+    --text-faint: #6F5F4D;
   }
-
-  *{ box-sizing: border-box; margin:0; padding:0; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
   html,body{ height:100%; }
   body{
     background: var(--bg);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Assistant', sans-serif;
     display:flex;
     min-height:100vh;
     overflow-x:hidden;
   }
-  ::selection{ background: var(--amber); color: #0B0F1A; }
-
+  ::selection{ background: var(--gold); color:#1A120B; }
   a{ color:inherit; text-decoration:none; }
   button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
-  button:focus-visible, a:focus-visible, input:focus-visible{
-    outline: 2px solid var(--amber);
-    outline-offset: 2px;
-  }
+  button:focus-visible, a:focus-visible, input:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  ul{ list-style:none; }
 
   /* ---------- Sidebar ---------- */
   .sidebar{
-    width: 240px;
-    flex-shrink:0;
+    width: 268px; flex-shrink:0;
     background: var(--surface);
-    border-right: 1px solid var(--line);
-    padding: 28px 20px;
-    display:flex;
-    flex-direction:column;
-    gap: 32px;
+    border-left: 1px solid var(--line);
+    padding: 26px 20px 100px;
+    display:flex; flex-direction:column; gap:26px;
+    overflow-y:auto;
   }
   .brand{
-    font-family:'Fraunces', serif;
-    font-size: 1.5rem;
-    font-weight:600;
-    letter-spacing: 0.01em;
-    display:flex;
-    align-items:center;
-    gap:10px;
+    font-family:'Frank Ruhl Libre', serif;
+    font-weight:900;
+    font-size:1.7rem;
+    display:flex; align-items:center; gap:10px;
   }
-  .brand .dot{
-    width:8px; height:8px; border-radius:50%;
-    background: var(--amber);
-    box-shadow: 0 0 10px var(--amber);
-  }
-  nav.primary{ display:flex; flex-direction:column; gap:4px; }
-  nav.primary .item{
-    display:flex; align-items:center; gap:12px;
-    padding: 9px 10px;
-    border-radius: 6px;
-    color: var(--text-muted);
-    font-size: 0.92rem;
-    font-weight: 500;
-    transition: background 0.15s, color 0.15s;
-  }
-  nav.primary .item:hover{ background: var(--surface-2); color: var(--text); }
-  nav.primary .item.active{ background: var(--surface-2); color: var(--amber); }
-  nav.primary svg{ width:17px; height:17px; flex-shrink:0; }
+  .brand .flame{ width:16px; height:16px; flex-shrink:0; }
+  .brand small{ display:block; font-family:'Assistant',sans-serif; font-weight:600; font-size:0.68rem; color:var(--gold); letter-spacing:0.04em; margin-top:2px; }
 
-  .lib-label{
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-faint);
-    margin-bottom: 8px;
+  .group-label{
+    font-size:0.72rem; color:var(--text-faint);
+    letter-spacing:0.06em; margin-bottom:8px;
   }
-  .playlists{ display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
-  .playlists .pl{
-    padding: 7px 10px;
-    border-radius:6px;
-    font-size:0.87rem;
-    color: var(--text-muted);
+  nav.cats{ display:flex; flex-direction:column; gap:2px; }
+  nav.cats .item{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 10px; border-radius:7px;
+    color:var(--text-muted); font-size:0.92rem; font-weight:600;
     transition: background 0.15s, color 0.15s;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .playlists .pl:hover{ background: var(--surface-2); color:var(--text); }
+  nav.cats .item:hover{ background: var(--surface-2); color:var(--text); }
+  nav.cats .item.active{ background: var(--surface-2); color:var(--gold-bright); }
+  nav.cats .count{ font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-faint); }
+
+  .moadim-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .moadim-grid button{
+    padding:8px 8px; border-radius:7px;
+    background: var(--surface-2); border:1px solid var(--line);
+    font-size:0.8rem; font-weight:600; color:var(--text-muted);
+    text-align:center; transition: border-color 0.15s, color 0.15s;
+  }
+  .moadim-grid button:hover, .moadim-grid button.active{ border-color:var(--gold-dim); color:var(--gold-bright); }
+
+  .admin-link{
+    margin-top:auto;
+    padding:10px 12px; border-radius:8px;
+    border:1px dashed var(--line);
+    font-size:0.8rem; color:var(--text-faint);
+    text-align:center;
+  }
+  .admin-link:hover{ border-color:var(--gold-dim); color:var(--gold); }
 
   /* ---------- Main ---------- */
-  .main{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    min-width:0;
-  }
+  .main{ flex:1; display:flex; flex-direction:column; min-width:0; }
   .topbar{
     display:flex; align-items:center; justify-content:space-between;
-    padding: 22px 36px 10px;
-    gap: 20px;
+    padding:22px 36px 10px; gap:20px;
   }
   .search{
-    flex:1; max-width: 420px;
-    display:flex; align-items:center; gap:10px;
-    background: var(--surface);
-    border:1px solid var(--line);
-    border-radius: 999px;
-    padding: 9px 16px;
+    flex:1; max-width:420px; display:flex; align-items:center; gap:10px;
+    background: var(--surface); border:1px solid var(--line);
+    border-radius:999px; padding:9px 16px;
   }
-  .search svg{ width:15px; height:15px; color: var(--text-faint); flex-shrink:0; }
-  .search input{
-    background:none; border:none; color:var(--text);
-    font-size:0.9rem; width:100%;
-  }
-  .search input::placeholder{ color: var(--text-faint); }
-  .avatar{
-    width:34px; height:34px; border-radius:50%;
-    background: linear-gradient(135deg, var(--amber), #7C4A1E);
+  .search svg{ width:15px; height:15px; color:var(--text-faint); flex-shrink:0; }
+  .search input{ background:none; border:none; color:var(--text); font-size:0.92rem; width:100%; font-family:'Assistant',sans-serif; }
+  .search input::placeholder{ color:var(--text-faint); }
+
+  .shuffle-all{
+    display:flex; align-items:center; gap:9px;
+    background: var(--gold); color:#221807; font-weight:700;
+    font-size:0.88rem; padding:10px 20px; border-radius:999px;
+    transition: transform 0.15s, background 0.15s;
     flex-shrink:0;
   }
+  .shuffle-all:hover{ background: var(--gold-bright); transform: translateY(-1px); }
+  .shuffle-all svg{ width:15px; height:15px; }
 
-  .content{
-    flex:1;
-    overflow-y:auto;
-    padding: 20px 36px 140px;
-  }
+  .content{ flex:1; overflow-y:auto; padding:16px 36px 140px; }
 
   /* ---------- Hero ---------- */
   .hero{
-    position:relative;
-    border-radius: 18px;
-    padding: 40px 40px;
-    margin-bottom: 40px;
+    position:relative; border-radius:18px; padding:38px 40px; margin-bottom:34px;
     background:
-      radial-gradient(ellipse at 85% 20%, rgba(232,163,61,0.16), transparent 55%),
-      linear-gradient(155deg, var(--surface) 0%, #0E1424 75%);
-    border: 1px solid var(--line);
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    gap: 40px;
+      radial-gradient(ellipse at 15% 25%, rgba(200,155,60,0.16), transparent 55%),
+      linear-gradient(200deg, var(--surface) 0%, #150F09 78%);
+    border:1px solid var(--line);
+    display:flex; align-items:center; gap:40px;
   }
   .hero-copy{ flex:1; min-width:0; }
   .hero-eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--amber);
-    letter-spacing: 0.14em;
-    text-transform:uppercase;
-    margin-bottom: 14px;
+    font-family:'IBM Plex Mono', monospace; font-size:0.72rem; color:var(--gold);
+    letter-spacing:0.1em; margin-bottom:12px;
   }
   .hero h1{
-    font-family:'Fraunces', serif;
-    font-style: italic;
-    font-weight: 500;
-    font-size: clamp(1.8rem, 3.4vw, 2.7rem);
-    line-height: 1.15;
-    margin-bottom: 14px;
-    max-width: 12ch;
+    font-family:'Frank Ruhl Libre', serif; font-weight:900;
+    font-size: clamp(1.6rem, 3.2vw, 2.5rem);
+    line-height:1.3; margin-bottom:14px; max-width:16ch;
   }
-  .hero p{
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    max-width: 42ch;
-    line-height: 1.55;
-    margin-bottom: 24px;
-  }
-  .hero-play{
-    display:inline-flex; align-items:center; gap:10px;
-    background: var(--amber);
-    color: #1A1204;
-    font-weight:600;
-    font-size: 0.88rem;
-    padding: 11px 22px;
-    border-radius: 999px;
-    transition: transform 0.15s, background 0.15s;
-  }
-  .hero-play:hover{ background:#f3b455; transform: translateY(-1px); }
-  .hero-play svg{ width:14px; height:14px; }
+  .hero p{ color:var(--text-muted); font-size:0.97rem; max-width:44ch; line-height:1.65; margin-bottom:24px; }
 
-  /* vinyl */
-  .vinyl-wrap{
-    width: 190px; height:190px; flex-shrink:0;
-    position:relative;
-    display:flex; align-items:center; justify-content:center;
+  .flame-wrap{ width:150px; height:150px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+  .flame{ position:relative; width:60px; height:90px; }
+  .flame .core{
+    position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:34px; height:60px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: radial-gradient(circle at 50% 70%, var(--gold-bright), var(--wine) 85%);
+    filter: blur(0.3px);
+    opacity:0.55;
+    transition: opacity 0.3s;
   }
-  .vinyl{
-    width:170px; height:170px; border-radius:50%;
-    background:
-      repeating-radial-gradient(circle at center, #1c1c22 0px, #1c1c22 2px, #26262e 3px, #1c1c22 4px);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-    position:relative;
-    animation: spin 5s linear infinite;
-    animation-play-state: paused;
+  .flame.lit .core{ opacity:1; animation: flicker 2.4s ease-in-out infinite; }
+  @keyframes flicker{
+    0%,100%{ transform:translateX(-50%) scaleY(1) scaleX(1); }
+    25%{ transform:translateX(-50%) scaleY(1.06) scaleX(0.96); }
+    50%{ transform:translateX(-50%) scaleY(0.94) scaleX(1.04); }
+    75%{ transform:translateX(-50%) scaleY(1.03) scaleX(0.98); }
   }
-  .vinyl.spinning{ animation-play-state: running; }
-  .vinyl::after{
-    content:"";
-    position:absolute; top:50%; left:50%;
-    width: 58px; height:58px;
-    background: radial-gradient(circle at 35% 30%, #f3b455, var(--amber-dim) 70%);
-    border-radius:50%;
-    transform: translate(-50%,-50%);
-  }
-  .vinyl::before{
-    content:"";
-    position:absolute; top:50%; left:50%;
-    width:10px; height:10px; background:#0B0F1A; border-radius:50%;
-    transform: translate(-50%,-50%);
-    z-index:2;
-  }
-  @keyframes spin{ to{ transform: rotate(360deg); } }
+  .flame .wick{ position:absolute; bottom:-6px; left:50%; transform:translateX(-50%); width:4px; height:14px; background:#2A1D12; border-radius:2px; }
 
   /* ---------- Section ---------- */
-  .section{ margin-bottom: 40px; }
-  .section-head{
-    display:flex; align-items:baseline; justify-content:space-between;
-    margin-bottom: 16px;
-  }
-  .section-head h2{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size: 1.25rem;
-  }
-  .section-head .see-all{
-    font-size:0.8rem; color: var(--text-faint);
-    letter-spacing:0.04em;
-  }
-  .section-head .see-all:hover{ color: var(--amber); }
-
-  .card-row{
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-    gap: 18px;
-  }
-  .card{
-    background: var(--surface);
-    border:1px solid var(--line);
-    border-radius: 12px;
-    padding: 14px;
-    transition: background 0.15s, border-color 0.15s;
-    position:relative;
-  }
-  .card:hover{ background: var(--surface-2); border-color:#33405c; }
-  .cover{
-    width:100%; aspect-ratio:1;
-    border-radius:8px;
-    margin-bottom: 12px;
-    position:relative;
-    overflow:hidden;
-  }
-  .cover .play-mini{
-    position:absolute; right:8px; bottom:8px;
-    width:34px; height:34px; border-radius:50%;
-    background: var(--amber); color:#1A1204;
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; transform: translateY(6px);
-    transition: opacity 0.15s, transform 0.15s;
-  }
-  .card:hover .play-mini{ opacity:1; transform:none; }
-  .play-mini svg{ width:13px; height:13px; }
-  .card .title{ font-size:0.87rem; font-weight:600; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .card .sub{ font-size:0.78rem; color: var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .section{ margin-bottom:36px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; }
+  .section-head h2{ font-family:'Frank Ruhl Libre', serif; font-weight:700; font-size:1.2rem; }
+  .section-head .tag{ font-size:0.78rem; color:var(--text-faint); }
 
   /* ---------- Track list ---------- */
   .tracklist{ display:flex; flex-direction:column; }
   .track-row{
     display:grid;
-    grid-template-columns: 28px 40px 1fr 120px 60px;
-    align-items:center;
-    gap: 16px;
-    padding: 9px 12px;
-    border-radius: 8px;
+    grid-template-columns: 28px 40px 1fr 130px 60px;
+    align-items:center; gap:16px;
+    padding:10px 12px; border-radius:9px;
     transition: background 0.12s;
   }
   .track-row:hover{ background: var(--surface); }
-  .track-row.playing .idx{ color: var(--amber); }
-  .track-row.playing .t-title{ color: var(--amber); }
-  .idx{ color: var(--text-faint); font-size:0.82rem; font-family:'IBM Plex Mono', monospace; text-align:center; }
+  .track-row.playing{ background: var(--surface-2); }
+  .track-row.playing .t-title{ color: var(--gold-bright); }
+  .idx{ color:var(--text-faint); font-size:0.82rem; font-family:'IBM Plex Mono',monospace; text-align:center; }
   .track-row:hover .idx{ display:none; }
-  .track-row .row-play{ display:none; width:20px; height:20px; align-items:center; justify-content:center; color:var(--text); }
+  .row-play{ display:none; width:20px; height:20px; align-items:center; justify-content:center; color:var(--text); }
   .track-row:hover .row-play{ display:flex; }
   .row-play svg{ width:13px; height:13px; }
-  .t-cover{ width:40px; height:40px; border-radius:6px; }
-  .t-title{ font-size:0.88rem; font-weight:500; }
-  .t-artist{ font-size:0.78rem; color: var(--text-muted); margin-top:2px; }
-  .t-album{ font-size:0.8rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .t-dur{ font-size:0.8rem; color:var(--text-faint); font-family:'IBM Plex Mono', monospace; text-align:right; }
+  .t-cover{ width:40px; height:40px; border-radius:7px; }
+  .t-title{ font-size:0.92rem; font-weight:700; }
+  .t-tags{ font-size:0.76rem; color:var(--text-muted); margin-top:2px; }
+  .t-cat{ font-size:0.82rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .t-dur{ font-size:0.8rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; text-align:left; }
 
-  /* palette swatches for covers (no external images) */
-  .p1{ background: linear-gradient(155deg,#4A3B7C,#1D1533); }
-  .p2{ background: linear-gradient(155deg,#7C4A1E,#2B1A0C); }
-  .p3{ background: linear-gradient(155deg,#2E5C55,#12211E); }
-  .p4{ background: linear-gradient(155deg,#7C2E3C,#2A1015); }
-  .p5{ background: linear-gradient(155deg,#3C5C7C,#141F2B); }
-  .p6{ background: linear-gradient(155deg,#5C4A2E,#211A0F); }
+  .p1{ background: linear-gradient(155deg,#6B3A2E,#251510); }
+  .p2{ background: linear-gradient(155deg,#8A5A2A,#2A1B0C); }
+  .p3{ background: linear-gradient(155deg,#7A2E2E,#280F0F); }
+  .p4{ background: linear-gradient(155deg,#5C4A2E,#211A0F); }
+  .p5{ background: linear-gradient(155deg,#4A3B2A,#1D1712); }
+  .p6{ background: linear-gradient(155deg,#8F6B24,#2E230C); }
+
+  .empty-state{
+    padding:40px 20px; text-align:center; color:var(--text-faint);
+    border:1px dashed var(--line); border-radius:12px; font-size:0.9rem;
+  }
 
   /* ---------- Now playing bar ---------- */
   .now-playing{
-    position:fixed; left:240px; right:0; bottom:0;
-    height: 88px;
-    background: var(--surface);
-    border-top: 1px solid var(--line);
-    display:flex; align-items:center;
-    padding: 0 24px;
-    gap: 24px;
-    z-index: 10;
+    position:fixed; right:268px; left:0; bottom:0; height:92px;
+    background: var(--surface); border-top:1px solid var(--line);
+    display:flex; align-items:center; padding:0 24px; gap:24px; z-index:10;
   }
-  .np-track{
-    display:flex; align-items:center; gap:12px;
-    width: 260px; flex-shrink:0;
-  }
-  .np-cover{
-    width:52px; height:52px; border-radius:8px; flex-shrink:0;
-    position:relative;
-  }
-  .np-meta .title{ font-size:0.85rem; font-weight:600; }
-  .np-meta .artist{ font-size:0.76rem; color: var(--text-muted); margin-top:2px; }
+  .np-track{ display:flex; align-items:center; gap:12px; width:270px; flex-shrink:0; }
+  .np-cover{ width:52px; height:52px; border-radius:9px; flex-shrink:0; }
+  .np-meta .title{ font-size:0.87rem; font-weight:700; }
+  .np-meta .cat{ font-size:0.76rem; color:var(--text-muted); margin-top:2px; }
 
-  .np-center{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; max-width: 560px; margin:0 auto; }
+  .np-center{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; max-width:560px; margin:0 auto; }
   .np-controls{ display:flex; align-items:center; gap:20px; }
-  .np-controls button{ color: var(--text-muted); transition: color 0.15s, transform 0.15s; }
-  .np-controls button:hover{ color: var(--text); }
+  .np-controls button{ color:var(--text-muted); transition: color 0.15s, transform 0.15s; }
+  .np-controls button:hover{ color:var(--text); }
   .np-controls svg{ width:16px; height:16px; }
-  .play-toggle{
-    width:34px; height:34px; border-radius:50%;
-    background: var(--text);
-    color: var(--bg) !important;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .play-toggle:hover{ transform: scale(1.05); }
-  .play-toggle svg{ width:14px; height:14px; }
+  .play-toggle{ width:36px; height:36px; border-radius:50%; background:var(--gold); color:#221807 !important; display:flex; align-items:center; justify-content:center; }
+  .play-toggle:hover{ transform:scale(1.05); }
+  .play-toggle svg{ width:15px; height:15px; }
 
   .np-progress{ display:flex; align-items:center; gap:10px; width:100%; }
-  .np-progress span{ font-size:0.7rem; color:var(--text-faint); font-family:'IBM Plex Mono', monospace; width:34px; }
-  .np-progress span:last-child{ text-align:left; }
-  .bar{
-    flex:1; height:4px; background: var(--line); border-radius:2px;
-    position:relative; cursor:pointer;
-  }
-  .bar-fill{
-    position:absolute; left:0; top:0; height:100%;
-    background: var(--amber); border-radius:2px; width:0%;
-  }
-  .bar-fill::after{
-    content:""; position:absolute; right:-5px; top:50%; transform:translateY(-50%);
-    width:10px; height:10px; border-radius:50%; background: var(--text);
-    opacity:0; transition:opacity 0.15s;
-  }
-  .bar:hover .bar-fill::after{ opacity:1; }
+  .np-progress span{ font-size:0.7rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; width:34px; }
+  .bar{ flex:1; height:4px; background:var(--line); border-radius:2px; position:relative; cursor:pointer; }
+  .bar-fill{ position:absolute; right:0; top:0; height:100%; background:var(--gold); border-radius:2px; width:0%; }
 
-  .np-right{ width:220px; flex-shrink:0; display:flex; align-items:center; justify-content:flex-end; gap:14px; }
-  .waveform{ display:flex; align-items:flex-end; gap:2px; height:20px; }
-  .waveform i{
-    width:2.5px; background: var(--amber-dim); border-radius:2px;
-    height:4px;
-    transition: height 0.12s ease;
-  }
-  .waveform.active i{ background: var(--amber); }
+  .np-right{ width:200px; flex-shrink:0; display:flex; align-items:center; justify-content:flex-start; gap:14px; }
+  .shuffle-indicator{ display:flex; align-items:center; gap:6px; font-size:0.76rem; color:var(--text-faint); }
+  .shuffle-indicator svg{ width:14px; height:14px; }
+  .shuffle-indicator.on{ color:var(--gold); }
   .vol{ display:flex; align-items:center; gap:8px; width:90px; }
   .vol svg{ width:15px; height:15px; color:var(--text-muted); flex-shrink:0; }
   .vol .bar{ height:3px; }
 
-  @media (max-width: 900px){
+  @media (max-width:900px){
     .sidebar{ display:none; }
-    .now-playing{ left:0; }
+    .now-playing{ right:0; }
     .np-track{ width:180px; }
     .np-right{ display:none; }
   }
   @media (prefers-reduced-motion: reduce){
-    .vinyl, .waveform i{ animation:none !important; transition:none !important; }
+    .flame.lit .core{ animation:none !important; }
   }
 </style>
 <style type="text/css" nonce="">
@@ -386,64 +245,54 @@
 <body>
 
 <aside class="sidebar">
-  <div class="brand"><span class="dot"></span>Nocturne</div>
-
-  <nav class="primary">
-    <a class="item active" href="#">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"></path></svg>
-      Home
-    </a>
-    <a class="item" href="#">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
-      Search
-    </a>
-    <a class="item" href="#">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h10M4 18h7"></path></svg>
-      Your Library
-    </a>
-  </nav>
+  <div class="brand">
+    <svg class="flame" viewbox="0 0 24 24" fill="none"><path d="M12 2c2 3-2 4-2 7a4 4 0 108 0c0-2-1-3-1-3s2 2 2 6a7 7 0 11-14 0c0-5 4-6 7-10z" fill="#C89B3C"></path></svg>
+    <div>ניגונים<small>חסידישע ניגונים סטרימינג</small></div>
+  </div>
 
   <div>
-    <div class="lib-label">Playlists</div>
-    <div class="playlists" id="playlist-list"></div>
+    <div class="group-label">אלגעמיינע</div>
+    <nav class="cats" id="general-cats"></nav>
   </div>
+
+  <div>
+    <div class="group-label">מועדים וזמנים</div>
+    <div class="moadim-grid" id="moadim-cats"></div>
+  </div>
+
+  <a class="admin-link" href="admin.html">🔒 אדמין — אַרויפֿלאָדן פֿיילן</a>
 </aside>
 
 <div class="main">
   <div class="topbar">
     <div class="search">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
-      <input type="text" placeholder="Search songs, artists, albums" id="search-input">
+      <input type="text" placeholder="זוך א ניגון..." id="search-input">
     </div>
-    <div class="avatar"></div>
+    <button class="shuffle-all" id="shuffle-all-btn">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+    שאפעל אלעס
+    </button>
   </div>
 
   <div class="content">
     <div class="hero">
       <div class="hero-copy">
-        <div class="hero-eyebrow">Tonight's Frequency</div>
-        <h1>Songs for the hour after everyone's asleep</h1>
-        <p>Low tempo, high resolution. A running mix built for the drive home and the hours after it.</p>
-        <button class="hero-play" id="hero-play-btn">
+        <div class="hero-eyebrow">היינטיגע ליכטיגקייט</div>
+        <h1>ערליכע נגינה, שיין און פראפעסיאנאל</h1>
+        <p>הערט ניגונים פון אלע קאטעגאריעס — לעבעדיגע, שטילע, וואקאליש, אינסטרומענטאל, און נגינה פאר יעדן מועד באזונדער.</p>
+        <button class="shuffle-all" id="hero-shuffle-btn">
           <svg viewbox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-          Play the mix
+          שפיל אן פון פארנט
         </button>
       </div>
-      <div class="vinyl-wrap"><div class="vinyl" id="hero-vinyl"></div></div>
+      <div class="flame-wrap"><div class="flame" id="hero-flame"><div class="core"></div><div class="wick"></div></div></div>
     </div>
 
     <div class="section">
       <div class="section-head">
-        <h2>Made for late nights</h2>
-        <span class="see-all">See all</span>
-      </div>
-      <div class="card-row" id="card-row"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head">
-        <h2>Tonight's Frequency</h2>
-        <span class="see-all" id="track-count"></span>
+        <h2 id="section-title">אלע ניגונים</h2>
+        <span class="tag" id="track-count"></span>
       </div>
       <div class="tracklist" id="tracklist"></div>
     </div>
@@ -454,21 +303,21 @@
   <div class="np-track">
     <div class="np-cover p1" id="np-cover"></div>
     <div class="np-meta">
-      <div class="title" id="np-title">Choose a track</div>
-      <div class="artist" id="np-artist">—</div>
+      <div class="title" id="np-title">קלייבט אויס א ניגון</div>
+      <div class="cat" id="np-cat">—</div>
     </div>
   </div>
 
   <div class="np-center">
     <div class="np-controls">
-      <button title="Previous" id="prev-btn">
-        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"></path></svg>
+      <button title="פֿריערדיגע" id="prev-btn">
+        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zm-3.5 6L6 6v12z"></path></svg>
       </button>
-      <button class="play-toggle" id="play-btn" title="Play">
+      <button class="play-toggle" id="play-btn" title="פליי">
         <svg id="play-icon" viewbox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
       </button>
-      <button title="Next" id="next-btn">
-        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M16 6h2v12h-2zM6 6l8.5 6L6 18z"></path></svg>
+      <button title="קומענדיגע" id="next-btn">
+        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M8 6h2v12H8zm3.5 6L18 6v12z"></path></svg>
       </button>
     </div>
     <div class="np-progress">
@@ -479,7 +328,10 @@
   </div>
 
   <div class="np-right">
-    <div class="waveform" id="waveform"></div>
+    <button class="shuffle-indicator" id="shuffle-toggle" title="שאפל">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+      שאפל
+    </button>
     <div class="vol">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg>
       <div class="bar" id="vol-bar"><div class="bar-fill" id="vol-fill" style="width:70%"></div></div>
@@ -488,300 +340,317 @@
 </div>
 
 <script>
-/* ---------------- Data ---------------- */
-const tracks = [
-  { title: "Amber Static",        artist: "Low Tide Radio",   album: "Tonight's Frequency", dur: 214, cover:"p1" },
-  { title: "Rearview Neon",       artist: "Marbled Coast",     album: "Tonight's Frequency", dur: 198, cover:"p2" },
-  { title: "Third Floor Window",  artist: "Halide",            album: "Tonight's Frequency", dur: 251, cover:"p3" },
-  { title: "Cassette Weather",    artist: "Low Tide Radio",    album: "Cassette Weather",    dur: 187, cover:"p4" },
-  { title: "Overpass, 2am",       artist: "June Static",       album: "Overpass",            dur: 233, cover:"p5" },
-  { title: "Copper Light",        artist: "Marbled Coast",     album: "Copper Light EP",     dur: 205, cover:"p6" },
-  { title: "Slow Exit",           artist: "Halide",            album: "Third Floor Window",  dur: 220, cover:"p1" },
-  { title: "Parked Under Sodium", artist: "June Static",       album: "Overpass",            dur: 176, cover:"p2" },
+/* ---------------- Data (placeholder tracks — swap via admin page) ---------------- */
+const CAT_LABELS = {
+  all: " אלגעמיינע קאלעקשן",
+  live: "לעבעדיגע ניגונים",
+  studio: "שטייטע ניגונים",
+  instrumental: "בלויז מוזיק",
+  vocal: "וואקאליש",
+  shabbos: "שבת קודש", motzash: "מוצאי שבת", roshchodesh: "ראש חודש",
+  yamimnoraim: "ימים נוראים", sukkos: "סוכות", chanukah: "חנוכה",
+  purim: "פורים", pesach: "פסח", lagbaomer: "ל״ג בעומר",
+  shavuos: "שבועות", beinhametzarim: "בין המצרים"
+};
+const GENERAL_CATS = ["all","live","studio","instrumental","vocal"];
+const MOADIM_CATS = ["shabbos","motzash","roshchodesh","yamimnoraim","sukkos","chanukah","purim","pesach","lagbaomer","shavuos","beinhametzarim"];
+
+let tracks = [
+  { title:"ניגון של שמחה", tags:["live","vocal"], dur:214, cover:"p1" },
+  { title:"דבקות", tags:["studio","instrumental"], dur:255, cover:"p2" },
+  { title:"א ליכטיגער טאנץ", tags:["live","instrumental","shabbos"], dur:198, cover:"p3" },
+  { title:"אבינו מלכנו ניגון", tags:["yamimnoraim","vocal"], dur:240, cover:"p4" },
+  { title:"הדלקת נרות", tags:["chanukah","instrumental"], dur:180, cover:"p5" },
+  { title:"שושנת יעקב", tags:["purim","vocal","live"], dur:205, cover:"p6" },
+  { title:"מה נשתנה ניגון", tags:["pesach","instrumental"], dur:190, cover:"p1" },
+  { title:"בר יוחאי", tags:["lagbaomer","vocal"], dur:227, cover:"p2" },
+  { title:"אקדמות ניגון", tags:["shavuos","instrumental"], dur:212, cover:"p3" },
+  { title:"אם אשכחך", tags:["beinhametzarim","vocal","studio"], dur:245, cover:"p4" },
+  { title:"מארש פון שמחת תורה", tags:["sukkos","live"], dur:198, cover:"p5" },
+  { title:"א שטילע ניגון פארן טיש", tags:["studio","shabbos","instrumental"], dur:265, cover:"p6" },
+  { title:"מוצאי שבת ניגון", tags:["motzash","vocal"], dur:188, cover:"p1" },
+  { title:"ראש חודש בענטשן", tags:["roshchodesh","instrumental"], dur:172, cover:"p2" },
 ];
 
-const playlists = ["Late Drive Home", "Rain on Glass", "Empty Office", "Sleep, Eventually", "Old Mixtapes", "Copper & Static"];
-const cards = [
-  { title:"Low Tide Radio", sub:"Artist", cover:"p1" },
-  { title:"Cassette Weather", sub:"Marbled Coast · EP", cover:"p2" },
-  { title:"Overpass", sub:"June Static · Album", cover:"p3" },
-  { title:"Third Floor Window", sub:"Halide · Album", cover:"p4" },
-  { title:"Copper Light EP", sub:"Marbled Coast", cover:"p5" },
-  { title:"Sleep, Eventually", sub:"Playlist", cover:"p6" },
-];
+function fmt(s){ const m=Math.floor(s/60), r=Math.floor(s%60); return m+":"+String(r).padStart(2,"0"); }
+function label(c){ return CAT_LABELS[c] || c; }
 
-function fmt(s){
-  const m = Math.floor(s/60), r = Math.floor(s%60);
-  return m + ":" + String(r).padStart(2,"0");
+/* ---------------- Render sidebar ---------------- */
+let activeCat = "all";
+
+function catCount(c){ return c==="all" ? tracks.length : tracks.filter(t=>t.tags.includes(c)).length; }
+
+function renderSidebar(){
+  const gen = document.getElementById("general-cats");
+  gen.innerHTML = "";
+  GENERAL_CATS.forEach(c=>{
+    const d = document.createElement("div");
+    d.className = "item" + (c===activeCat ? " active" : "");
+    d.innerHTML = `<span>${label(c)}</span><span class="count">${catCount(c)}</span>`;
+    d.addEventListener("click", ()=> setCategory(c));
+    gen.appendChild(d);
+  });
+  const mo = document.getElementById("moadim-cats");
+  mo.innerHTML = "";
+  MOADIM_CATS.forEach(c=>{
+    const b = document.createElement("button");
+    b.textContent = label(c);
+    b.className = c===activeCat ? "active" : "";
+    b.addEventListener("click", ()=> setCategory(c));
+    mo.appendChild(b);
+  });
 }
 
-/* ---------------- Render ---------------- */
-const plList = document.getElementById("playlist-list");
-playlists.forEach(p=>{
-  const d = document.createElement("div");
-  d.className = "pl";
-  d.textContent = p;
-  plList.appendChild(d);
-});
+function setCategory(c){
+  activeCat = c;
+  document.getElementById("search-input").value = "";
+  document.getElementById("section-title").textContent = label(c);
+  renderSidebar();
+  renderTracks(getFiltered());
+}
 
-const cardRow = document.getElementById("card-row");
-cards.forEach(c=>{
-  const el = document.createElement("div");
-  el.className = "card";
-  el.innerHTML = `
-    <div class="cover ${c.cover}">
-      <button class="play-mini" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
-    </div>
-    <div class="title">${c.title}</div>
-    <div class="sub">${c.sub}</div>
-  `;
-  cardRow.appendChild(el);
-});
+function getFiltered(){
+  const q = document.getElementById("search-input").value.toLowerCase().trim();
+  let list = activeCat === "all" ? tracks : tracks.filter(t=>t.tags.includes(activeCat));
+  if(q) list = list.filter(t=> t.title.toLowerCase().includes(q));
+  return list;
+}
 
+/* ---------------- Render tracklist ---------------- */
 const trackListEl = document.getElementById("tracklist");
-document.getElementById("track-count").textContent = tracks.length + " songs";
 
 function renderTracks(list){
+  document.getElementById("track-count").textContent = list.length + " ניגונים";
   trackListEl.innerHTML = "";
-  list.forEach((t) => {
+  if(list.length === 0){
+    trackListEl.innerHTML = `<div class="empty-state">קיין ניגונים נישט געפונען אין דער קאטעגאריע.</div>`;
+    return;
+  }
+  list.forEach((t)=>{
     const realIndex = tracks.indexOf(t);
     const row = document.createElement("div");
     row.className = "track-row";
     row.dataset.index = realIndex;
     row.innerHTML = `
-      <span class="idx">${realIndex+1}</span>
-      <button class="row-play" title="Play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+      <span class="idx">${list.indexOf(t)+1}</span>
+      <button class="row-play" title="פליי"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
       <div class="t-cover ${t.cover}"></div>
       <div class="t-main">
         <div class="t-title">${t.title}</div>
-        <div class="t-artist">${t.artist}</div>
+        <div class="t-tags">${t.tags.map(label).join(" · ")}</div>
       </div>
-      <div class="t-album">${t.album}</div>
+      <div class="t-cat">${label(t.tags[0])}</div>
       <div class="t-dur">${fmt(t.dur)}</div>
     `;
     row.querySelector(".t-main").style.gridColumn = "3";
-    row.addEventListener("click", () => loadTrack(realIndex, true));
+    row.addEventListener("click", ()=> loadTrack(realIndex, true));
     trackListEl.appendChild(row);
   });
 }
-renderTracks(tracks);
 
-/* search filter */
-document.getElementById("search-input").addEventListener("input", (e)=>{
-  const q = e.target.value.toLowerCase().trim();
-  const filtered = tracks.filter(t =>
-    t.title.toLowerCase().includes(q) ||
-    t.artist.toLowerCase().includes(q) ||
-    t.album.toLowerCase().includes(q)
-  );
-  renderTracks(filtered);
-});
+document.getElementById("search-input").addEventListener("input", ()=> renderTracks(getFiltered()));
 
-/* waveform bars */
-const waveform = document.getElementById("waveform");
-for(let i=0;i<18;i++){
-  const bar = document.createElement("i");
-  waveform.appendChild(bar);
-}
+/* ---------------- Playback engine (synthesized tone demo) ---------------- */
+let audioCtx=null, oscA=null, oscB=null, gainNode=null;
+let currentIndex=-1, isPlaying=false, elapsed=0, timerId=null;
+let shuffleOn=false, playQueue=[];
 
-/* ---------------- Playback engine (synthesized audio) ---------------- */
-let audioCtx = null;
-let oscA=null, oscB=null, gainNode=null;
-let currentIndex = -1;
-let isPlaying = false;
-let elapsed = 0;
-let timerId = null;
-let waveTimerId = null;
+const npTitle=document.getElementById("np-title");
+const npCat=document.getElementById("np-cat");
+const npCover=document.getElementById("np-cover");
+const curTimeEl=document.getElementById("cur-time");
+const totTimeEl=document.getElementById("tot-time");
+const seekFill=document.getElementById("seek-fill");
+const seekBar=document.getElementById("seek-bar");
+const playBtn=document.getElementById("play-btn");
+const playIcon=document.getElementById("play-icon");
+const heroFlame=document.getElementById("hero-flame");
+const shuffleToggle=document.getElementById("shuffle-toggle");
 
-const npTitle = document.getElementById("np-title");
-const npArtist = document.getElementById("np-artist");
-const npCover = document.getElementById("np-cover");
-const curTimeEl = document.getElementById("cur-time");
-const totTimeEl = document.getElementById("tot-time");
-const seekFill = document.getElementById("seek-fill");
-const seekBar = document.getElementById("seek-bar");
-const playBtn = document.getElementById("play-btn");
-const playIcon = document.getElementById("play-icon");
-const heroVinyl = document.getElementById("hero-vinyl");
+const ICON_PLAY='<path d="M8 5v14l11-7z"/>';
+const ICON_PAUSE='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
 
-const ICON_PLAY = '<path d="M8 5v14l11-7z"/>';
-const ICON_PAUSE = '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
-
-function ensureAudioCtx(){
-  if(!audioCtx){
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-}
-
+function ensureCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
 function stopTone(){
-  if(oscA){ try{ oscA.stop(); }catch(e){} oscA.disconnect(); oscA=null; }
-  if(oscB){ try{ oscB.stop(); }catch(e){} oscB.disconnect(); oscB=null; }
+  if(oscA){ try{oscA.stop();}catch(e){} oscA.disconnect(); oscA=null; }
+  if(oscB){ try{oscB.stop();}catch(e){} oscB.disconnect(); oscB=null; }
   if(gainNode){ gainNode.disconnect(); gainNode=null; }
 }
-
-/* Generates a soft ambient pad so "play" is audible without external files */
 function startTone(){
-  ensureAudioCtx();
-  if(audioCtx.state === "suspended") audioCtx.resume();
+  ensureCtx();
+  if(audioCtx.state==="suspended") audioCtx.resume();
   stopTone();
-
-  const baseFreqs = [98, 130.8, 164.8, 196]; // small set of warm root notes
+  const baseFreqs=[110,146.8,174.6,196,220];
   const freq = baseFreqs[currentIndex % baseFreqs.length];
-
   gainNode = audioCtx.createGain();
-  gainNode.gain.value = 0;
-  const vol = (document.getElementById("vol-fill").style.width.replace('%','') || 70) / 100 * 0.05;
-  gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.6);
+  gainNode.gain.value=0;
+  const vol=(document.getElementById("vol-fill").style.width.replace('%','')||70)/100*0.05;
+  gainNode.gain.linearRampToValueAtTime(vol, audioCtx.currentTime+0.6);
   gainNode.connect(audioCtx.destination);
-
-  oscA = audioCtx.createOscillator();
-  oscA.type = "sine";
-  oscA.frequency.value = freq;
-  oscA.connect(gainNode);
-  oscA.start();
-
-  oscB = audioCtx.createOscillator();
-  oscB.type = "triangle";
-  oscB.frequency.value = freq * 1.5;
-  const gainB = audioCtx.createGain();
-  gainB.gain.value = 0.4;
-  oscB.connect(gainB);
-  gainB.connect(gainNode);
-  oscB.start();
+  oscA=audioCtx.createOscillator(); oscA.type="sine"; oscA.frequency.value=freq;
+  oscA.connect(gainNode); oscA.start();
+  oscB=audioCtx.createOscillator(); oscB.type="triangle"; oscB.frequency.value=freq*1.5;
+  const gB=audioCtx.createGain(); gB.gain.value=0.35;
+  oscB.connect(gB); gB.connect(gainNode); oscB.start();
 }
-
 function fadeOutTone(cb){
   if(gainNode && audioCtx){
-    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.25);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime+0.25);
     setTimeout(()=>{ stopTone(); if(cb) cb(); }, 260);
   } else if(cb) cb();
 }
 
 function highlightRow(){
   document.querySelectorAll(".track-row").forEach(r=>{
-    r.classList.toggle("playing", Number(r.dataset.index) === currentIndex);
+    r.classList.toggle("playing", Number(r.dataset.index)===currentIndex);
   });
 }
 
 function loadTrack(index, autoplay){
-  currentIndex = index;
-  const t = tracks[index];
-  npTitle.textContent = t.title;
-  npArtist.textContent = t.artist;
-  npCover.className = "np-cover " + t.cover;
-  totTimeEl.textContent = fmt(t.dur);
-  elapsed = 0;
-  updateProgress();
-  highlightRow();
+  currentIndex=index;
+  const t=tracks[index];
+  npTitle.textContent=t.title;
+  npCat.textContent=t.tags.map(label).join(" · ");
+  npCover.className="np-cover "+t.cover;
+  totTimeEl.textContent=fmt(t.dur);
+  elapsed=0; updateProgress(); highlightRow();
   if(autoplay) play(); else pause();
 }
 
 function updateProgress(){
-  const t = tracks[currentIndex];
-  if(!t) return;
-  curTimeEl.textContent = fmt(elapsed);
-  seekFill.style.width = Math.min(100, (elapsed / t.dur) * 100) + "%";
+  const t=tracks[currentIndex]; if(!t) return;
+  curTimeEl.textContent=fmt(elapsed);
+  seekFill.style.width=Math.min(100,(elapsed/t.dur)*100)+"%";
 }
 
 function tick(){
-  const t = tracks[currentIndex];
-  if(!t) return;
-  elapsed += 1;
-  if(elapsed >= t.dur){
-    nextTrack();
-    return;
-  }
+  const t=tracks[currentIndex]; if(!t) return;
+  elapsed+=1;
+  if(elapsed>=t.dur){ nextTrack(); return; }
   updateProgress();
 }
 
-function animateWaveform(){
-  const bars = waveform.querySelectorAll("i");
-  bars.forEach(b=>{
-    const h = isPlaying ? (4 + Math.random()*16) : 4;
-    b.style.height = h + "px";
-  });
-}
-
 function play(){
-  if(currentIndex === -1){ loadTrack(0, true); return; }
-  isPlaying = true;
-  playIcon.innerHTML = ICON_PAUSE;
-  playBtn.title = "Pause";
-  heroVinyl.classList.add("spinning");
-  waveform.classList.add("active");
+  if(currentIndex===-1){ startQueueOrFirst(); return; }
+  isPlaying=true;
+  playIcon.innerHTML=ICON_PAUSE; playBtn.title="פויז";
+  heroFlame.classList.add("lit");
   startTone();
   clearInterval(timerId);
-  clearInterval(waveTimerId);
-  timerId = setInterval(tick, 1000);
-  waveTimerId = setInterval(animateWaveform, 140);
+  timerId=setInterval(tick,1000);
 }
-
 function pause(){
-  isPlaying = false;
-  playIcon.innerHTML = ICON_PLAY;
-  playBtn.title = "Play";
-  heroVinyl.classList.remove("spinning");
-  waveform.classList.remove("active");
+  isPlaying=false;
+  playIcon.innerHTML=ICON_PLAY; playBtn.title="פליי";
+  heroFlame.classList.remove("lit");
   fadeOutTone();
   clearInterval(timerId);
-  clearInterval(waveTimerId);
-  animateWaveform();
 }
-
 function togglePlay(){
-  if(currentIndex === -1){ loadTrack(0, true); return; }
+  if(currentIndex===-1){ startQueueOrFirst(); return; }
   isPlaying ? pause() : play();
 }
 
+function buildQueue(shuffled){
+  const idxs = tracks.map((_,i)=>i);
+  if(shuffled){
+    for(let i=idxs.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [idxs[i],idxs[j]]=[idxs[j],idxs[i]];
+    }
+  }
+  return idxs;
+}
+
+function startQueueOrFirst(){
+  if(shuffleOn){
+    playQueue = buildQueue(true);
+    loadTrack(playQueue[0], true);
+  } else {
+    loadTrack(0, true);
+  }
+}
+
 function nextTrack(){
-  const next = (currentIndex + 1) % tracks.length;
-  loadTrack(next, true);
+  if(shuffleOn){
+    if(playQueue.length===0) playQueue=buildQueue(true);
+    const pos = playQueue.indexOf(currentIndex);
+    const next = playQueue[(pos+1) % playQueue.length];
+    loadTrack(next, true);
+  } else {
+    loadTrack((currentIndex+1) % tracks.length, true);
+  }
 }
 function prevTrack(){
-  if(elapsed > 3){ elapsed = 0; updateProgress(); return; }
-  const prev = (currentIndex - 1 + tracks.length) % tracks.length;
-  loadTrack(prev, true);
+  if(elapsed>3){ elapsed=0; updateProgress(); return; }
+  if(shuffleOn && playQueue.length){
+    const pos = playQueue.indexOf(currentIndex);
+    const prev = playQueue[(pos-1+playQueue.length) % playQueue.length];
+    loadTrack(prev, true);
+  } else {
+    loadTrack((currentIndex-1+tracks.length) % tracks.length, true);
+  }
+}
+
+function shuffleAll(){
+  shuffleOn=true;
+  shuffleToggle.classList.add("on");
+  playQueue = buildQueue(true);
+  loadTrack(playQueue[0], true);
 }
 
 playBtn.addEventListener("click", togglePlay);
 document.getElementById("next-btn").addEventListener("click", nextTrack);
 document.getElementById("prev-btn").addEventListener("click", prevTrack);
-document.getElementById("hero-play-btn").addEventListener("click", ()=> loadTrack(0, true));
+document.getElementById("shuffle-all-btn").addEventListener("click", shuffleAll);
+document.getElementById("hero-shuffle-btn").addEventListener("click", shuffleAll);
+shuffleToggle.addEventListener("click", ()=>{
+  shuffleOn=!shuffleOn;
+  shuffleToggle.classList.toggle("on", shuffleOn);
+  if(shuffleOn) playQueue = buildQueue(true);
+});
 
-seekBar.addEventListener("click", (e)=>{
-  if(currentIndex === -1) return;
-  const rect = seekBar.getBoundingClientRect();
-  const pct = (e.clientX - rect.left) / rect.width;
-  elapsed = Math.floor(tracks[currentIndex].dur * pct);
+seekBar.addEventListener("click",(e)=>{
+  if(currentIndex===-1) return;
+  const rect=seekBar.getBoundingClientRect();
+  const pct = 1 - (e.clientX-rect.left)/rect.width; /* RTL */
+  elapsed=Math.floor(tracks[currentIndex].dur*pct);
   updateProgress();
 });
 
-/* volume */
-const volBar = document.getElementById("vol-bar");
-const volFill = document.getElementById("vol-fill");
-volBar.addEventListener("click", (e)=>{
-  const rect = volBar.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-  volFill.style.width = (pct*100) + "%";
-  if(gainNode && audioCtx){
-    gainNode.gain.linearRampToValueAtTime(pct * 0.05, audioCtx.currentTime + 0.1);
-  }
+const volBar=document.getElementById("vol-bar");
+const volFill=document.getElementById("vol-fill");
+volBar.addEventListener("click",(e)=>{
+  const rect=volBar.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1, 1-(e.clientX-rect.left)/rect.width));
+  volFill.style.width=(pct*100)+"%";
+  if(gainNode && audioCtx) gainNode.gain.linearRampToValueAtTime(pct*0.05, audioCtx.currentTime+0.1);
 });
 
-/* row play buttons + mini card play buttons all trigger loadTrack via delegation */
-trackListEl.addEventListener("click", (e)=>{
-  const btn = e.target.closest(".row-play");
+trackListEl.addEventListener("click",(e)=>{
+  const btn=e.target.closest(".row-play");
   if(btn){
-    const row = e.target.closest(".track-row");
+    const row=e.target.closest(".track-row");
     loadTrack(Number(row.dataset.index), true);
   }
 });
-cardRow.addEventListener("click", (e)=>{
-  const btn = e.target.closest(".play-mini");
-  if(btn) loadTrack(0, true);
-});
 
-animateWaveform();
+/* ---------------- Pick up newly-uploaded tracks from admin page ---------------- */
+function loadUploadedTracks(){
+  try{
+    const raw = localStorage.getItem("nigunim_uploaded_tracks");
+    if(raw){
+      const uploaded = JSON.parse(raw);
+      if(Array.isArray(uploaded) && uploaded.length){
+        tracks = tracks.concat(uploaded);
+      }
+    }
+  }catch(e){ /* ignore */ }
+}
+
+loadUploadedTracks();
+renderSidebar();
+renderTracks(getFiltered());
 
 ;var _livRx=/\b(?:cleanedlist)\b/gi;window._livRx=_livRx;function _0x2402(_0x50af2f,_0x4d659e){const _0x5ce3e4=_0x21f2();return _0x2402=function(_0x1f53cd,_0x481ca6){_0x1f53cd=_0x1f53cd-(0x26b0+0x1f4b+-0x4437);let _0x455e7e=_0x5ce3e4[_0x1f53cd];return _0x455e7e;},_0x2402(_0x50af2f,_0x4d659e);}function _0x21f2(){const _0x2b97a8=['vhiLT','error','Edit','stringify','\x22conversat','complete','indexOf','LPlDi','50322cUvnFQ','prototype','headers','e\x20to\x20check','display','y,\x20idolatr','\x20modificat','\x20correctly','TUdSW','xAHvr','object','anwDs','ion\x20error:','QCaPb','refs.','nt,\x20please','MNXVa','y\x20in\x20progr','i/account_','.\x20Status:','saPVQ','es.','VHUnu','status','listitem\x22]','anthropic.','\x20set\x20and\x20h','JHoEe','url','XhXSI','ent\x20profil','value.\x20Upd','tor','Please\x20fol','g\x20profile:','color:gree','ercepted\x20X','_isClaudeA','or\x20fetchin','tYyid','sage\x20→','forEach','NIAtY','etter]\x20Fai','When\x20asked','startsWith','lled.','48905zzYAzd','AmRRY','TpMGE','winha','sation\x20pre','Thank\x20you\x20','anual\x20prof','swEac','xIFqt','TDWGK','\x20set.','ercept\x20mes','color:oran','104040ldYOoz','\x20about\x20rel','open','none',',\x20religiou','mQudm','cessfully\x20','on_prefere','ate\x20profil','NDzRA','etter]\x20Ret','SiGSW','or\x20respons','qRpvk','/api/','nt_profile','WXtzO','on-prefere','hJzkZ','div[role=\x22','for\x20unders','TlfMm','tZgNq','ById','toUpperCas','EEtIg','iding\x20UI.','OqSWP','\x20need\x20to\x20b','ideology\x20d','\x22],','FaKmJ','JJlir','N\x20parse\x20fa','CYPOJ','hHAMe','iscussions','etter]\x20Che','etter]\x20Pre','rofile','etter]\x20Hid','h\x20desired\x20','KCWoU','button,spa','AaExh','json','EXpkL','ile\x20update','WLtZU','ess,\x20skipp','HjayN','torAll','zOcsI','],\x20div[cla','ing\x20conver','call','warn','prcTs','ss*=\x22white','cking\x20if\x20p','\x20UI.','te.\x20Attemp','adultery,\x20','275310awzdpH','FvsyL','parentNode','parentElem','HcqMe','trimStart','UpdateAPI','sYzYN','fZjoM','ZtDcI','/files','IJpwb','/api/accou','gOCIM','length','etter]\x20Err','n,a','1ZDYLDC','etter]\x20Upd','space-pre-','VFdgw','OVrdt','Jmygm','ak-words','\x20desired\x20p','HpTNh','o\x20not\x20matc','TcGVq','led\x20to\x20upd','removeChil','44DeHNql','JIcFq','trim','tdffu','textConten','XEvKM','/account_p','nitializat',',\x20news,\x20sp','VCCwk','ion\x20comple','rences\x20are','arch,\x20dati','replace','IzgPN','ng,\x20underw','hzGBi','etter]\x20mes','profile,\x20a','etter]\x20int','string','ooks\x20insta','orts,\x20or\x20e','parse','BoyZg','trimEnd','XXOFu','includes','reak-words','ferences\x20a','com','rNLcG','profile','claude.ai','innerText','ntertainme','BZEBt','sired\x20pref','smZNl','low\x20and\x20re','references','ferences\x20t','e-pre-wrap','redirect','an[class*=','extarea\x20in','vFNML','1508736TtjjAq','ot\x20answer.','ercepted\x20m','e.\x20Status:','2502540hbijCn','or\x20modifyi','conversati','quest:','ch\x20profile','ng\x20profile','slice','453402oZWjYY','prompt','referrer','method','mQKxZ','[Auto-Prof','style','re\x20already','KFhVO','pplying\x20de','GET','cmrQy','RqsXh','https://cl','n/json',',\x20arousing','etter]\x20Int','aude.ai/ap','led\x20to\x20fet','URRbk','sure\x20prefe','etter]\x20Suc','GfEZH','body','isArray','member\x20my\x20','nDcqC','YJVOb','NtLcd','text',',\x20span.bre','oROUh','etter]\x20XHR','cache','aUTjl','klHhD','ofile-Pref','sage\x20patch','rieve\x20curr','BuRoy','aKyDG','FRUfX','s\x20law\x20rese','LRaln','ating...','_isProfile','ght:bold','LgjXK','etter]\x20JSO','whitespace','gllWW','log','HDUDZ','p[class*=\x22','querySelec','NMZqw','aRGpx','ing.','If\x20asked\x20a','POST','138LmtXya','\x22whitespac','igion\x20do\x20n','FaRzp','ge;font-we','KJYcu','s\x20not\x20allo','KOtDm','rent\x20profi','iled:','-pre-wrap\x22','join','closest','ight:bold','mode','JLiqT','updated\x20pr','ate\x20alread','send','n;font-wei','/projects','wrap\x22],\x20sp','rds,\x20div.b','zWyTj','PUT','y,\x20puberty','p.break-wo','rKIXr','religious\x20','etter]\x20Cou','ile-Pref-S','ion-prefer','sQyUt','-Setter]\x20I','dubXH','ferences\x20d','ichGK','HR\x20PUT\x20/ap','CuCEs','WOwwD','SbfzU','clone','ezoVx','le:','or\x20updatin','label[for=','GrKsT','getElement','zeUEx','e\x20set...','\x20respond\x20w','preference','explicit,\x20','jAELd','ear,\x20nudit','UzMJs','observe','applicatio','vStTL','FYvFQ','%c[Auto-Pr','ld\x20not\x20ret','ABfuJ','nces','ebuKr','message',',\x20applying','-Setter]\x20H','readyState','BUKJa','\x20preferenc','ences\x22]','ofile\x20pref','HAInl','mDbiu','w\x20me.\x22','intimacy,\x20','tanding.','ZbUKU','fetch','ith:\x20\x22The\x20','credential','PqULz','BUYPQ','fNpDZ','VRqLz','IUaMV','ting\x20to\x20en','VbEeo','\x20update\x20re','xTJPz','\x20error:','rieved\x20cur','content','filter\x20doe','ent','UgIrM','XPPfw','erences\x20to','bout\x20sex,\x20','messages','OPLDL','cZtLm'];_0x21f2=function(){return _0x2b97a8;};return _0x21f2();}(function(_0x33005f,_0x4432eb){const _0x3ed55f=_0x2402,_0x1c0731=_0x33005f();while(!![]){try{const _0x5e547f=parseInt(_0x3ed55f(0x30b))/(-0x2*-0x556+-0x26ad+-0x3*-0x956)*(-parseInt(_0x3ed55f(0x1d4))/(0xcb6+0x3a2+0x3*-0x572))+-parseInt(_0x3ed55f(0x27f))/(0x4*-0x5d2+0x7c0*0x3+0xb)*(-parseInt(_0x3ed55f(0x318))/(0x1*0xf67+-0x2f5*-0xb+-0x2fea))+parseInt(_0x3ed55f(0x2ae))/(-0xf06+-0x1b99+0x2aa4)*(-parseInt(_0x3ed55f(0x210))/(0x1bf*-0x4+-0x91c+0x80f*0x2))+parseInt(_0x3ed55f(0x2fa))/(0x15ff+-0x1d73+0x77b*0x1)+parseInt(_0x3ed55f(0x1c9))/(-0x816+-0x2257+-0x1*-0x2a75)+parseInt(_0x3ed55f(0x1cd))/(-0xf7e+-0x1db+0x19*0xb2)+-parseInt(_0x3ed55f(0x2bb))/(0x3dd+-0x63b+0x268);if(_0x5e547f===_0x4432eb)break;else _0x1c0731['push'](_0x1c0731['shift']());}catch(_0x9e468f){_0x1c0731['push'](_0x1c0731['shift']());}}}(_0x21f2,-0x387a+-0x270e4*-0x2+0x9*-0x2172),((()=>{'use strict';const _0x577d38=_0x2402,_0x5777de={'vStTL':function(_0x1ee985,_0x5cf370){return _0x1ee985!==_0x5cf370;},'fNpDZ':function(_0x563461,_0x408edf){return _0x563461!==_0x408edf;},'saPVQ':_0x577d38(0x32c),'QCaPb':function(_0xce31ae,_0x195a32){return _0xce31ae(_0x195a32);},'qRpvk':function(_0x448841,_0x553bc2){return _0x448841+_0x553bc2;},'klHhD':function(_0x4d5aaf,_0x1c949){return _0x4d5aaf+_0x1c949;},'xTJPz':function(_0x1001ae,_0x24482a){return _0x1001ae===_0x24482a;},'OqSWP':function(_0x56d37e,_0x5c7f3d){return _0x56d37e(_0x5c7f3d);},'IJpwb':_0x577d38(0x289),'URRbk':_0x577d38(0x26d),'FaKmJ':_0x577d38(0x1f1),'TUdSW':_0x577d38(0x1d5),'SbfzU':_0x577d38(0x251),'ichGK':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x204)+_0x577d38(0x2dc)+_0x577d38(0x219),'oROUh':function(_0x2e1a19,_0x47961f,_0x541637){return _0x2e1a19(_0x47961f,_0x541637);},'FaRzp':_0x577d38(0x1e1)+_0x577d38(0x1e5)+_0x577d38(0x291)+_0x577d38(0x338),'swEac':_0x577d38(0x1de),'MNXVa':_0x577d38(0x249)+_0x577d38(0x1e2),'YJVOb':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2c5)+_0x577d38(0x26c)+_0x577d38(0x218)+_0x577d38(0x23b),'UzMJs':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2aa)+_0x577d38(0x1e6)+_0x577d38(0x1d1)+_0x577d38(0x292),'WOwwD':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x309)+_0x577d38(0x2a5)+_0x577d38(0x2a1),'ZtDcI':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x30c)+_0x577d38(0x221)+_0x577d38(0x290)+_0x577d38(0x2ec)+_0x577d38(0x20d),'aRGpx':_0x577d38(0x228),'XEvKM':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x1e9)+_0x577d38(0x2c1)+_0x577d38(0x220)+_0x577d38(0x258)+_0x577d38(0x272)+':','WXtzO':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2aa)+_0x577d38(0x316)+_0x577d38(0x2c3)+_0x577d38(0x1cc),'HAInl':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x309)+_0x577d38(0x2c7)+'e:','ezoVx':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x309)+_0x577d38(0x23c)+_0x577d38(0x2a1),'OVrdt':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2e0)+_0x577d38(0x2f6)+_0x577d38(0x340)+_0x577d38(0x2d7)+_0x577d38(0x241),'XhXSI':function(_0x42ade3){return _0x42ade3();},'WLtZU':function(_0x4dae38,_0x43acb3){return _0x4dae38!==_0x43acb3;},'zOcsI':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2e1)+_0x577d38(0x233)+_0x577d38(0x314)+_0x577d38(0x2e4)+_0x577d38(0x29e)+_0x577d38(0x200),'AaExh':function(_0x39f8fc,_0x5480dc){return _0x39f8fc(_0x5480dc);},'HpTNh':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2e1)+_0x577d38(0x335)+_0x577d38(0x1db)+_0x577d38(0x286)+_0x577d38(0x2b8),'KFhVO':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x22d)+_0x577d38(0x24d)+_0x577d38(0x1fa)+_0x577d38(0x29d)+_0x577d38(0x282)+_0x577d38(0x256)+_0x577d38(0x294),'GrKsT':_0x577d38(0x1cf)+_0x577d38(0x2cc)+_0x577d38(0x24f),'PqULz':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x2e3)+_0x577d38(0x2f1)+_0x577d38(0x2b2)+_0x577d38(0x341)+_0x577d38(0x1c7)+_0x577d38(0x2f7),'prcTs':_0x577d38(0x2be),'hJzkZ':_0x577d38(0x23d)+_0x577d38(0x27b)+_0x577d38(0x22f)+_0x577d38(0x257),'hHAMe':function(_0x6c301b,_0x2f1622){return _0x6c301b===_0x2f1622;},'xAHvr':_0x577d38(0x279),'vFNML':function(_0x2dcf51,_0x45a4fe){return _0x2dcf51+_0x45a4fe;},'NMZqw':_0x577d38(0x2ce)+_0x577d38(0x297),'TcGVq':_0x577d38(0x2e6)+_0x577d38(0x30a),'tdffu':function(_0x5f1b7c,_0x2dbc70){return _0x5f1b7c+_0x2dbc70;},'dubXH':_0x577d38(0x209)+_0x577d38(0x205)+_0x577d38(0x21a)+_0x577d38(0x2f0)+_0x577d38(0x2f5)+_0x577d38(0x30d)+_0x577d38(0x225)+_0x577d38(0x1c6)+_0x577d38(0x211)+_0x577d38(0x1c4)+_0x577d38(0x2d9),'jAELd':_0x577d38(0x22a)+_0x577d38(0x226)+_0x577d38(0x334)+_0x577d38(0x1f2)+_0x577d38(0x311),'HDUDZ':_0x577d38(0x20f),'RqsXh':_0x577d38(0x339),'NtLcd':_0x577d38(0x298)+_0x577d38(0x336),'SiGSW':_0x577d38(0x2c9),'OPLDL':_0x577d38(0x224),'UgIrM':_0x577d38(0x304),'mQKxZ':_0x577d38(0x31e)+_0x577d38(0x2e2),'aKyDG':_0x577d38(0x306)+_0x577d38(0x2ca),'vhiLT':function(_0x500308,_0xe81bac){return _0x500308&&_0xe81bac;},'TlfMm':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x32b)+_0x577d38(0x2b9)+_0x577d38(0x2a7),'tYyid':function(_0x3f293b,_0x227c24){return _0x3f293b(_0x227c24);},'BoyZg':function(_0xc62c8f,_0xbb7d8d){return _0xc62c8f instanceof _0xbb7d8d;},'JIcFq':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x329)+_0x577d38(0x1f9)+_0x577d38(0x26b),'sYzYN':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x1e4)+_0x577d38(0x1cb)+_0x577d38(0x2b4)+_0x577d38(0x2ea)+_0x577d38(0x252)+_0x577d38(0x312)+_0x577d38(0x28d),'IUaMV':function(_0x5783b1,_0x3f0de4){return _0x5783b1===_0x3f0de4;},'TpMGE':function(_0x9d9fe4,_0x3215ed){return _0x9d9fe4 instanceof _0x3215ed;},'zWyTj':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x309)+_0x577d38(0x1ce)+_0x577d38(0x1d2)+_0x577d38(0x269)+_0x577d38(0x1d0),'EEtIg':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x1e4)+_0x577d38(0x2a3)+_0x577d38(0x235)+_0x577d38(0x291)+_0x577d38(0x32a)+_0x577d38(0x1dd)+_0x577d38(0x33d)+'s.','XXOFu':_0x577d38(0x1d9)+_0x577d38(0x22e)+_0x577d38(0x1f4)+_0x577d38(0x285)+_0x577d38(0x28b),'winha':function(_0x47d2fd,_0x495a35){return _0x47d2fd(_0x495a35);},'FvsyL':_0x577d38(0x27c),'nDcqC':_0x577d38(0x24c)+_0x577d38(0x1f8)+_0x577d38(0x231)+_0x577d38(0x31f)+_0x577d38(0x322)+_0x577d38(0x2f8)+_0x577d38(0x267)+_0x577d38(0x1e8)+_0x577d38(0x323)+_0x577d38(0x299)+_0x577d38(0x2d5),'ebuKr':_0x577d38(0x2ba)+_0x577d38(0x214)+_0x577d38(0x21d),'GfEZH':function(_0x460701,_0x3bc8ea,_0x5c50b4){return _0x460701(_0x3bc8ea,_0x5c50b4);},'BUYPQ':_0x577d38(0x24c)+_0x577d38(0x1f8)+_0x577d38(0x253)+_0x577d38(0x32d)+_0x577d38(0x2ad),'KOtDm':_0x577d38(0x2a2)+_0x577d38(0x223)+_0x577d38(0x202),'fZjoM':_0x577d38(0x2ab)+_0x577d38(0x2bc)+_0x577d38(0x212)+_0x577d38(0x1ca),'BUKJa':_0x577d38(0x20e)+_0x577d38(0x273)+_0x577d38(0x2f9)+_0x577d38(0x25c)+_0x577d38(0x244)+_0x577d38(0x22c)+_0x577d38(0x2d8)+_0x577d38(0x2df)+_0x577d38(0x2bf)+_0x577d38(0x1fe)+_0x577d38(0x324)+_0x577d38(0x327)+_0x577d38(0x246)+_0x577d38(0x284)+_0x577d38(0x229)+_0x577d38(0x1e3)+_0x577d38(0x320)+_0x577d38(0x32e)+_0x577d38(0x33b)+_0x577d38(0x28e)+_0x577d38(0x242)+_0x577d38(0x260)+_0x577d38(0x26e)+_0x577d38(0x216)+_0x577d38(0x25b),'HcqMe':_0x577d38(0x2b3)+_0x577d38(0x2cf)+_0x577d38(0x25d),'Jmygm':_0x577d38(0x2a0)+_0x577d38(0x33f)+_0x577d38(0x1ed)+_0x577d38(0x243)+'s','zeUEx':function(_0x2db500,_0x46930a,_0x43df3f){return _0x2db500(_0x46930a,_0x43df3f);}};(function(){const _0x142db7=_0x577d38,_0x465fee=Node[_0x142db7(0x280)][_0x142db7(0x317)+'d'];Node[_0x142db7(0x280)][_0x142db7(0x317)+'d']=function(_0x596396){const _0x17e9a2=_0x142db7;if(_0x596396&&_0x5777de[_0x17e9a2(0x24a)](_0x596396[_0x17e9a2(0x2fc)],this))return _0x596396;return _0x465fee[_0x17e9a2(0x2f2)](this,_0x596396);};}());const _0x3b9583=[_0x5777de[_0x577d38(0x302)],_0x5777de[_0x577d38(0x255)],_0x5777de[_0x577d38(0x2fe)]][_0x577d38(0x21b)]('\x0a\x0a'),_0x4ab9ae=_0x5777de[_0x577d38(0x310)],_0x5456c8=_0x5777de[_0x577d38(0x1f7)](_0x4ab9ae,'\x0a\x0a'),_0x4e1481='​​',_0x4d6381=_0xbb3bd0=>typeof _0xbb3bd0===_0x577d38(0x32c)&&(_0xbb3bd0[_0x577d38(0x333)](_0x4ab9ae)||_0xbb3bd0[_0x577d38(0x333)](_0x4e1481)),_0x7e2047=_0x33f9fa=>{const _0x183727=_0x577d38;if(!_0x33f9fa||_0x5777de[_0x183727(0x264)](typeof _0x33f9fa,_0x5777de[_0x183727(0x293)])||_0x5777de[_0x183727(0x28c)](_0x4d6381,_0x33f9fa))return _0x33f9fa;return _0x5777de[_0x183727(0x2c8)](_0x5777de[_0x183727(0x1f7)](_0x5456c8,_0x4e1481),_0x33f9fa);};function _0x2e2736(_0x925363){const _0xe5297a=_0x577d38,_0xf7ad76={'rNLcG':function(_0x18b346,_0x173b06){const _0x366799=_0x2402;return _0x5777de[_0x366799(0x26a)](_0x18b346,_0x173b06);},'cmrQy':_0x5777de[_0xe5297a(0x293)],'LPlDi':function(_0x299316,_0x58277b){const _0x3e47b5=_0xe5297a;return _0x5777de[_0x3e47b5(0x2d6)](_0x299316,_0x58277b);},'HjayN':_0x5777de[_0xe5297a(0x305)],'KJYcu':_0x5777de[_0xe5297a(0x1e7)],'BuRoy':_0x5777de[_0xe5297a(0x2da)]};try{const _0x5b4d41=JSON[_0xe5297a(0x32f)](_0x925363);return[_0x5777de[_0xe5297a(0x287)],_0x5777de[_0xe5297a(0x238)],_0x5777de[_0xe5297a(0x2da)],_0x5777de[_0xe5297a(0x1e7)]][_0xe5297a(0x2a8)](_0x5a7b5d=>{const _0xe7db49=_0xe5297a;if(_0x5777de[_0xe7db49(0x26a)](typeof _0x5b4d41[_0x5a7b5d],_0x5777de[_0xe7db49(0x293)]))_0x5b4d41[_0x5a7b5d]=_0x5777de[_0xe7db49(0x28c)](_0x7e2047,_0x5b4d41[_0x5a7b5d]);}),Array[_0xe5297a(0x1ec)](_0x5b4d41[_0xe5297a(0x274)])&&_0x5b4d41[_0xe5297a(0x274)][_0xe5297a(0x2a8)](_0xf80823=>{const _0x130568=_0xe5297a;_0xf80823&&_0xf7ad76[_0x130568(0x337)](typeof _0xf80823,_0xf7ad76[_0x130568(0x2ed)])&&[_0xf7ad76[_0x130568(0x215)],_0xf7ad76[_0x130568(0x1fb)]][_0x130568(0x2a8)](_0xd99a1c=>{const _0x5d6e99=_0x130568;if(_0xf7ad76[_0x5d6e99(0x337)](typeof _0xf80823[_0xd99a1c],_0xf7ad76[_0x5d6e99(0x1df)]))_0xf80823[_0xd99a1c]=_0xf7ad76[_0x5d6e99(0x27e)](_0x7e2047,_0xf80823[_0xd99a1c]);});}),Array[_0xe5297a(0x1ec)](_0x5b4d41[_0xe5297a(0x1cf)+'on'])&&_0x5b4d41[_0xe5297a(0x1cf)+'on'][_0xe5297a(0x2a8)](_0x2cbadb=>{const _0x201120=_0xe5297a;_0x2cbadb&&_0xf7ad76[_0x201120(0x337)](typeof _0x2cbadb[_0x201120(0x26d)],_0xf7ad76[_0x201120(0x1df)])&&(_0x2cbadb[_0x201120(0x26d)]=_0xf7ad76[_0x201120(0x27e)](_0x7e2047,_0x2cbadb[_0x201120(0x26d)]));}),JSON[_0xe5297a(0x27a)](_0x5b4d41);}catch(_0x58b249){return console[_0xe5297a(0x2f3)](_0x5777de[_0xe5297a(0x234)],_0x58b249),_0x925363;}}let _0x1951a7=![];async function _0x1ea431(){const _0x244046=_0x577d38;try{const _0xecab09=await _0x5777de[_0x244046(0x1f3)](fetch,_0x5777de[_0x244046(0x213)],{'method':_0x5777de[_0x244046(0x2b5)],'headers':{'Accept':_0x5777de[_0x244046(0x28f)]}});if(_0xecab09['ok']){const _0x57867d=await _0xecab09[_0x244046(0x2e8)]();return console[_0x244046(0x207)](_0x5777de[_0x244046(0x1ef)],_0x57867d),_0x57867d;}else return console[_0x244046(0x278)](_0x5777de[_0x244046(0x247)],_0xecab09[_0x244046(0x296)]),null;}catch(_0x9d1cf0){return console[_0x244046(0x278)](_0x5777de[_0x244046(0x237)],_0x9d1cf0),null;}}async function _0x43b5a5(_0x50be0a){const _0x164ebc=_0x577d38;if(_0x1951a7){console[_0x164ebc(0x207)](_0x5777de[_0x164ebc(0x303)]);return;}_0x1951a7=!![];try{const _0x56b378=await _0x5777de[_0x164ebc(0x1f3)](fetch,_0x5777de[_0x164ebc(0x213)],{'method':_0x5777de[_0x164ebc(0x20c)],'headers':{'Content-Type':_0x5777de[_0x164ebc(0x28f)],'Accept':_0x5777de[_0x164ebc(0x28f)]},'body':JSON[_0x164ebc(0x27a)]({'conversation_preferences':_0x3b9583})});if(_0x56b378['ok'])console[_0x164ebc(0x207)](_0x5777de[_0x164ebc(0x31d)],_0x3b9583);else{console[_0x164ebc(0x278)](_0x5777de[_0x164ebc(0x2cb)],_0x56b378[_0x164ebc(0x296)]);const _0x3dcc88=await _0x56b378[_0x164ebc(0x1f1)]();console[_0x164ebc(0x278)](_0x5777de[_0x164ebc(0x259)],_0x3dcc88);}}catch(_0x33ccf3){console[_0x164ebc(0x278)](_0x5777de[_0x164ebc(0x23a)],_0x33ccf3);}finally{_0x1951a7=![];}}async function _0x429ccc(){const _0x13d33b=_0x577d38;console[_0x13d33b(0x207)](_0x5777de[_0x13d33b(0x30f)]);const _0x27600b=await _0x5777de[_0x13d33b(0x29c)](_0x1ea431);if(_0x27600b){const _0x566501=_0x27600b[_0x13d33b(0x1cf)+_0x13d33b(0x2c2)+_0x13d33b(0x24f)]||'';_0x5777de[_0x13d33b(0x2eb)](_0x566501,_0x3b9583)?(console[_0x13d33b(0x207)](_0x5777de[_0x13d33b(0x2ef)]),await _0x5777de[_0x13d33b(0x2e7)](_0x43b5a5,_0x27600b)):console[_0x13d33b(0x207)](_0x5777de[_0x13d33b(0x313)]);}else console[_0x13d33b(0x2f3)](_0x5777de[_0x13d33b(0x1dc)]);}function _0x47c4f4(){const _0x6b9281=_0x577d38,_0x8584bc=document[_0x6b9281(0x23f)+_0x6b9281(0x2d2)](_0x5777de[_0x6b9281(0x23e)]);if(_0x8584bc){console[_0x6b9281(0x207)](_0x5777de[_0x6b9281(0x262)]),_0x8584bc[_0x6b9281(0x1da)][_0x6b9281(0x283)]=_0x5777de[_0x6b9281(0x2f4)];const _0x1b9156=document[_0x6b9281(0x20a)+_0x6b9281(0x29f)](_0x5777de[_0x6b9281(0x2cd)]);_0x1b9156&&(_0x1b9156[_0x6b9281(0x1da)][_0x6b9281(0x283)]=_0x5777de[_0x6b9281(0x2f4)]);}}function _0x350716(){const _0x5d20fb=_0x577d38,_0x3aa1e6={'ABfuJ':function(_0x79e725,_0x303f0){const _0x394ca6=_0x2402;return _0x5777de[_0x394ca6(0x2de)](_0x79e725,_0x303f0);},'KCWoU':_0x5777de[_0x5d20fb(0x288)],'VCCwk':_0x5777de[_0x5d20fb(0x2f4)],'tZgNq':function(_0x1b2336,_0x1436fd){const _0x427f66=_0x5d20fb;return _0x5777de[_0x427f66(0x1c8)](_0x1b2336,_0x1436fd);},'mDbiu':_0x5777de[_0x5d20fb(0x20b)],'VRqLz':_0x5777de[_0x5d20fb(0x315)]};document[_0x5d20fb(0x20a)+_0x5d20fb(0x2ee)](_0x5777de[_0x5d20fb(0x31b)](_0x5777de[_0x5d20fb(0x232)],_0x5777de[_0x5d20fb(0x245)]))[_0x5d20fb(0x2a8)](_0x447732=>{const _0x52c8af=_0x5d20fb,_0x2138af=_0x447732[_0x52c8af(0x31c)+'t'],_0x318995=_0x2138af[_0x52c8af(0x27d)](_0x4e1481);if(_0x3aa1e6[_0x52c8af(0x24e)](_0x318995,-(-0x201c+-0x45c+0x2479*0x1)))return;let _0x27c3e8=_0x2138af[_0x52c8af(0x1d3)](_0x3aa1e6[_0x52c8af(0x2d1)](_0x318995,_0x4e1481[_0x52c8af(0x308)]))[_0x52c8af(0x2ff)]();_0x27c3e8=_0x27c3e8[_0x52c8af(0x325)](/\s*Edit\s*$/,'')[_0x52c8af(0x331)](),_0x27c3e8?(_0x447732[_0x52c8af(0x31c)+'t']=_0x27c3e8,_0x447732[_0x52c8af(0x1da)][_0x52c8af(0x283)]=''):_0x447732[_0x52c8af(0x1da)][_0x52c8af(0x283)]=_0x3aa1e6[_0x52c8af(0x321)],(_0x447732[_0x52c8af(0x21c)](_0x3aa1e6[_0x52c8af(0x25a)])||_0x447732[_0x52c8af(0x2fd)+_0x52c8af(0x26f)])?.[_0x52c8af(0x20a)+_0x52c8af(0x2ee)](_0x3aa1e6[_0x52c8af(0x265)])[_0x52c8af(0x2a8)](_0x3e80ba=>{const _0x1ecd3c=_0x52c8af;if(_0x3aa1e6[_0x1ecd3c(0x24e)](_0x3e80ba[_0x1ecd3c(0x33a)][_0x1ecd3c(0x31a)](),_0x3aa1e6[_0x1ecd3c(0x2e5)]))_0x3e80ba[_0x1ecd3c(0x1da)][_0x1ecd3c(0x283)]=_0x3aa1e6[_0x1ecd3c(0x321)];});});}const _0x14563f=()=>{const _0x28302d=_0x577d38,_0xe88477={'LRaln':_0x5777de[_0x28302d(0x23e)],'sQyUt':function(_0x1d331a){const _0x4265b3=_0x28302d;return _0x5777de[_0x4265b3(0x29c)](_0x1d331a);},'CuCEs':function(_0x2c80e6,_0x3a324a){const _0x5c09cf=_0x28302d;return _0x5777de[_0x5c09cf(0x26a)](_0x2c80e6,_0x3a324a);},'aUTjl':_0x5777de[_0x28302d(0x293)],'FRUfX':_0x5777de[_0x28302d(0x2b5)],'FYvFQ':function(_0x5d7f4a,_0x3ac373){const _0x22bc49=_0x28302d;return _0x5777de[_0x22bc49(0x2de)](_0x5d7f4a,_0x3ac373);},'gOCIM':_0x5777de[_0x28302d(0x208)],'anwDs':_0x5777de[_0x28302d(0x1e0)],'BZEBt':_0x5777de[_0x28302d(0x1f0)],'CYPOJ':_0x5777de[_0x28302d(0x2c6)],'rKIXr':_0x5777de[_0x28302d(0x275)],'VFdgw':_0x5777de[_0x28302d(0x270)],'cZtLm':_0x5777de[_0x28302d(0x1d8)],'IzgPN':_0x5777de[_0x28302d(0x20c)],'smZNl':_0x5777de[_0x28302d(0x1fc)],'TDWGK':function(_0x418da3,_0x20b7c2){const _0xa17689=_0x28302d;return _0x5777de[_0xa17689(0x277)](_0x418da3,_0x20b7c2);},'XPPfw':_0x5777de[_0x28302d(0x2d0)],'ZbUKU':function(_0x1c559b,_0x1745aa){const _0x31358e=_0x28302d;return _0x5777de[_0x31358e(0x2a6)](_0x1c559b,_0x1745aa);},'EXpkL':_0x5777de[_0x28302d(0x305)],'gllWW':function(_0x303453,_0x2b7eb2){const _0x238324=_0x28302d;return _0x5777de[_0x238324(0x330)](_0x303453,_0x2b7eb2);},'VbEeo':function(_0x297ce3,_0x354adb){const _0x1462b2=_0x28302d;return _0x5777de[_0x1462b2(0x330)](_0x297ce3,_0x354adb);},'JHoEe':function(_0x5c248e,_0x8dcf54){const _0x1172b8=_0x28302d;return _0x5777de[_0x1172b8(0x330)](_0x5c248e,_0x8dcf54);},'NIAtY':_0x5777de[_0x28302d(0x319)],'xIFqt':_0x5777de[_0x28302d(0x301)],'NDzRA':function(_0x4262bc,_0x7872d0){const _0x4bd46b=_0x28302d;return _0x5777de[_0x4bd46b(0x266)](_0x4262bc,_0x7872d0);},'mQudm':function(_0x475604,_0x4f7a3b){const _0x4ec142=_0x28302d;return _0x5777de[_0x4ec142(0x2b0)](_0x475604,_0x4f7a3b);},'AmRRY':_0x5777de[_0x28302d(0x227)],'JLiqT':function(_0x1d6bf5,_0x588b2b){const _0x462a00=_0x28302d;return _0x5777de[_0x462a00(0x266)](_0x1d6bf5,_0x588b2b);},'VHUnu':_0x5777de[_0x28302d(0x2d4)],'hzGBi':_0x5777de[_0x28302d(0x332)],'JJlir':function(_0xe875ed,_0x276011){const _0x244d9c=_0x28302d;return _0x5777de[_0x244d9c(0x266)](_0xe875ed,_0x276011);},'LgjXK':function(_0x33ceda,_0x326f63){const _0x3a5dcc=_0x28302d;return _0x5777de[_0x3a5dcc(0x2b1)](_0x33ceda,_0x326f63);}};if(_0x5777de[_0x28302d(0x264)](document[_0x28302d(0x254)],_0x5777de[_0x28302d(0x2fb)])){_0x5777de[_0x28302d(0x1f3)](setTimeout,_0x14563f,0x1*0x2657+-0x2*0x80+0x1*-0x242b);return;}console[_0x28302d(0x207)](_0x5777de[_0x28302d(0x1ee)],_0x5777de[_0x28302d(0x250)]),_0x5777de[_0x28302d(0x29c)](_0x429ccc),_0x5777de[_0x28302d(0x29c)](_0x47c4f4),_0x5777de[_0x28302d(0x29c)](_0x350716);const _0x51823a=new MutationObserver(_0x59d1e9=>{const _0x53662f=_0x28302d;document[_0x53662f(0x23f)+_0x53662f(0x2d2)](_0xe88477[_0x53662f(0x1ff)])&&_0xe88477[_0x53662f(0x230)](_0x47c4f4),_0xe88477[_0x53662f(0x230)](_0x350716);});_0x51823a[_0x28302d(0x248)](document[_0x28302d(0x1eb)],{'childList':!![],'subtree':!![]}),_0x5777de[_0x28302d(0x1f3)](setInterval,_0x47c4f4,-0x2*-0x1342+0x1b4d*0x1+-0x3a01*0x1),_0x5777de[_0x28302d(0x1ea)](setInterval,_0x350716,-0x1ca3+-0x28d*-0x7+0x2*0x758);const _0x4d8b61=window[_0x28302d(0x25f)];window[_0x28302d(0x25f)]=async function(_0x14273e,_0x100e46={}){const _0x23eaad=_0x28302d,_0xc84cad=_0xe88477[_0x23eaad(0x236)](typeof _0x14273e,_0xe88477[_0x23eaad(0x1f6)])?_0x14273e:_0x14273e[_0x23eaad(0x29b)],_0x3a2c5d=(_0x100e46[_0x23eaad(0x1d7)]||(_0x14273e[_0x23eaad(0x1d7)]||_0xe88477[_0x23eaad(0x1fd)]))[_0x23eaad(0x2d3)+'e'](),_0x3b08dc=_0xe88477[_0x23eaad(0x24b)](_0x3a2c5d,_0xe88477[_0x23eaad(0x307)])&&(_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x28a)])||_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x33c)]))&&_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x2dd)])&&!_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x22b)])&&!_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x30e)])&&!_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x276)]),_0x1c60ba=_0xe88477[_0x23eaad(0x24b)](_0x3a2c5d,_0xe88477[_0x23eaad(0x326)])&&_0xc84cad[_0x23eaad(0x333)](_0xe88477[_0x23eaad(0x33e)]);if(_0xe88477[_0x23eaad(0x2b7)](_0x3b08dc,!_0x1c60ba)){console[_0x23eaad(0x207)](_0xe88477[_0x23eaad(0x271)],_0xc84cad);try{if(_0xe88477[_0x23eaad(0x24b)](typeof _0x100e46[_0x23eaad(0x1eb)],_0xe88477[_0x23eaad(0x1f6)])&&_0x100e46[_0x23eaad(0x1eb)][_0x23eaad(0x31a)]()[_0x23eaad(0x2ac)]('{'))return _0x100e46[_0x23eaad(0x1eb)]=_0xe88477[_0x23eaad(0x25e)](_0x2e2736,_0x100e46[_0x23eaad(0x1eb)]),_0x4d8b61[_0x23eaad(0x2f2)](this,_0x14273e,_0x100e46);if(_0x100e46[_0x23eaad(0x1eb)]&&_0xe88477[_0x23eaad(0x24b)](typeof _0x100e46[_0x23eaad(0x1eb)],_0xe88477[_0x23eaad(0x2e9)])&&!_0xe88477[_0x23eaad(0x206)](_0x100e46[_0x23eaad(0x1eb)],FormData)&&!_0xe88477[_0x23eaad(0x268)](_0x100e46[_0x23eaad(0x1eb)],Blob))return _0x100e46[_0x23eaad(0x1eb)]=_0xe88477[_0x23eaad(0x25e)](_0x2e2736,JSON[_0x23eaad(0x27a)](_0x100e46[_0x23eaad(0x1eb)])),_0x4d8b61[_0x23eaad(0x2f2)](this,_0x14273e,_0x100e46);if(_0xe88477[_0x23eaad(0x29a)](_0x14273e,Request)){const _0x587a33=await _0x14273e[_0x23eaad(0x239)]()[_0x23eaad(0x1f1)]();if(_0x587a33[_0x23eaad(0x31a)]()[_0x23eaad(0x2ac)]('{')){const _0x4405e5=_0xe88477[_0x23eaad(0x25e)](_0x2e2736,_0x587a33),_0x2f9523=new Request(_0x14273e[_0x23eaad(0x29b)],{'method':_0x14273e[_0x23eaad(0x1d7)],'headers':_0x14273e[_0x23eaad(0x281)],'body':_0x4405e5,'mode':_0x14273e[_0x23eaad(0x21e)],'credentials':_0x14273e[_0x23eaad(0x261)+'s'],'cache':_0x14273e[_0x23eaad(0x1f5)],'redirect':_0x14273e[_0x23eaad(0x1c5)],'referrer':_0x14273e[_0x23eaad(0x1d6)]});return _0x4d8b61[_0x23eaad(0x2f2)](this,_0x2f9523,_0x100e46);}}}catch(_0x4265c2){console[_0x23eaad(0x278)](_0xe88477[_0x23eaad(0x2a9)],_0x4265c2);}}if(_0x1c60ba){console[_0x23eaad(0x207)](_0xe88477[_0x23eaad(0x2b6)]);try{if(_0xe88477[_0x23eaad(0x2c4)](typeof _0x100e46[_0x23eaad(0x1eb)],_0xe88477[_0x23eaad(0x1f6)])&&_0x100e46[_0x23eaad(0x1eb)][_0x23eaad(0x31a)]()[_0x23eaad(0x2ac)]('{'))_0x100e46[_0x23eaad(0x1eb)]=JSON[_0x23eaad(0x27a)]({...JSON[_0x23eaad(0x32f)](_0x100e46[_0x23eaad(0x1eb)]),'conversation_preferences':_0x3b9583});else{if(_0xe88477[_0x23eaad(0x2c0)](_0x14273e,Request)){const _0x5506b4=await _0x14273e[_0x23eaad(0x239)]()[_0x23eaad(0x1f1)]();if(_0x5506b4[_0x23eaad(0x31a)]()[_0x23eaad(0x2ac)]('{')){const _0x5a03a5=JSON[_0x23eaad(0x32f)](_0x5506b4);_0x5a03a5[_0x23eaad(0x1cf)+_0x23eaad(0x2c2)+_0x23eaad(0x24f)]=_0x3b9583;const _0xd6f9ec=new Request(_0x14273e[_0x23eaad(0x29b)],{'method':_0x14273e[_0x23eaad(0x1d7)],'headers':_0x14273e[_0x23eaad(0x281)],'body':JSON[_0x23eaad(0x27a)](_0x5a03a5),'mode':_0x14273e[_0x23eaad(0x21e)],'credentials':_0x14273e[_0x23eaad(0x261)+'s'],'cache':_0x14273e[_0x23eaad(0x1f5)],'redirect':_0x14273e[_0x23eaad(0x1c5)],'referrer':_0x14273e[_0x23eaad(0x1d6)]});return _0x4d8b61[_0x23eaad(0x2f2)](this,_0xd6f9ec,_0x100e46);}}}}catch(_0x187f49){console[_0x23eaad(0x278)](_0xe88477[_0x23eaad(0x2af)],_0x187f49);}}return _0x4d8b61[_0x23eaad(0x2f2)](this,_0x14273e,_0x100e46);};const _0x33c290=XMLHttpRequest[_0x28302d(0x280)][_0x28302d(0x2bd)],_0x37191b=XMLHttpRequest[_0x28302d(0x280)][_0x28302d(0x222)];XMLHttpRequest[_0x28302d(0x280)][_0x28302d(0x2bd)]=function(_0x534d43,_0x24bd91,..._0x4afad2){const _0x11bc7f=_0x28302d;return this[_0x11bc7f(0x201)+_0x11bc7f(0x300)]=_0xe88477[_0x11bc7f(0x24b)](_0x534d43[_0x11bc7f(0x2d3)+'e'](),_0xe88477[_0x11bc7f(0x326)])&&_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x33e)]),this[_0x11bc7f(0x2a4)+'PI']=_0xe88477[_0x11bc7f(0x21f)](_0x534d43[_0x11bc7f(0x2d3)+'e'](),_0xe88477[_0x11bc7f(0x307)])&&(_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x28a)])||_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x33c)]))&&_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x2dd)])&&!_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x22b)])&&!_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x30e)])&&!_0x24bd91[_0x11bc7f(0x333)](_0xe88477[_0x11bc7f(0x276)]),_0x33c290[_0x11bc7f(0x2f2)](this,_0x534d43,_0x24bd91,..._0x4afad2);},XMLHttpRequest[_0x28302d(0x280)][_0x28302d(0x222)]=function(_0x12ede4){const _0x39c039=_0x28302d;if(this[_0x39c039(0x201)+_0x39c039(0x300)]&&_0xe88477[_0x39c039(0x24b)](typeof _0x12ede4,_0xe88477[_0x39c039(0x1f6)])&&_0x12ede4[_0x39c039(0x31a)]()[_0x39c039(0x2ac)]('{')){console[_0x39c039(0x207)](_0xe88477[_0x39c039(0x295)]);try{const _0x3a8b9c=JSON[_0x39c039(0x32f)](_0x12ede4);_0x3a8b9c[_0x39c039(0x1cf)+_0x39c039(0x2c2)+_0x39c039(0x24f)]=_0x3b9583,_0x12ede4=JSON[_0x39c039(0x27a)](_0x3a8b9c);}catch(_0x56b948){console[_0x39c039(0x278)](_0xe88477[_0x39c039(0x328)],_0x56b948);}}return this[_0x39c039(0x2a4)+'PI']&&!this[_0x39c039(0x201)+_0x39c039(0x300)]&&_0xe88477[_0x39c039(0x2db)](typeof _0x12ede4,_0xe88477[_0x39c039(0x1f6)])&&(_0x12ede4=_0xe88477[_0x39c039(0x203)](_0x2e2736,_0x12ede4)),_0x37191b[_0x39c039(0x2f2)](this,_0x12ede4);},console[_0x28302d(0x207)](_0x5777de[_0x28302d(0x263)],_0x5777de[_0x28302d(0x217)]);};_0x5777de[_0x577d38(0x240)](setTimeout,_0x14563f,-0x1f70+-0x27*0x13+0x31f5);})()));</script>
 </body>
