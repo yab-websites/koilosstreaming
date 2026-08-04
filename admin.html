@@ -63,6 +63,7 @@
     background: var(--surface-2); border:1px dashed var(--line);
     font-size:0.76rem; color:var(--text-faint); line-height:1.55;
   }
+  .demo-note code{ background:rgba(200,155,60,0.15); padding:1px 5px; border-radius:4px; }
 
   /* ---------- Dashboard ---------- */
   .dash{ display:none; flex:1; padding:32px; max-width:900px; margin:0 auto; width:100%; }
@@ -140,22 +141,27 @@
 <div class="login-wrap" id="login-wrap">
   <div class="login-card">
     <h1>אריינלאגירן</h1>
-    <p class="sub">נאר פאר אדמינען. דא קענט איר אַרויפֿלאָדן און פארוואלטן די ניגונים.</p>
-    <div class="error-msg" id="error-msg">פאלשער נאמען אָדער פאסווארד.</div>
-    <div class="field">
-      <label for="user">נוצער־נאמען</label>
-      <input type="text" id="user" autocomplete="username">
+    <p class="sub">נאר פאר דעם אָנגעוויזענעם אדמין-אימעיל. דא קענט איר אַרויפֿלאָדן און פארוואלטן די ניגונים.</p>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div id="login-form">
+      <div class="field">
+        <label for="user">אימעיל אַדרעס</label>
+        <input type="email" id="user" autocomplete="username" placeholder="music@koilos.org">
+      </div>
+      <div class="field">
+        <label for="pass">פאסווארד</label>
+        <input type="password" id="pass" autocomplete="current-password">
+      </div>
+      <button class="login-btn" id="login-btn">אריין</button>
     </div>
-    <div class="field">
-      <label for="pass">פאסווארד</label>
-      <input type="password" id="pass" autocomplete="current-password">
-    </div>
-    <button class="login-btn" id="login-btn">אריין</button>
+
     <div class="demo-note">
-      ⚠️ דאס איז א דעמא־לאגין וואס אַרבעט בלויז אין דעם בראוזער (קיין עכטער סערווער נישטא). פאר א
-      פראדוקט וואס דארף זיין טאקע זיכער, מוז מען פארבינדן א ריכטיגן בעק-ענד מיט עכטער אויטענטיקאציע
-      און פֿייל-סטאראדזש (למשל Firebase, Node/Express, אָדער ענליכס). דעמא נוצער-נאמען:
-      <code>admin</code>, פאסווארד: <code>nigun2026</code>
+      ⚠️ נאר <code>music@koilos.org</code> קען אריינלאגן. דאס אַרבעט בלויז אין דעם בראוזער (קיין עכטער
+      סערווער נישטא) — דער פאסווארד ווערט אָפגעהיט לאקאל אין <code>localStorage</code>, וואס איז ניט
+      זיכער גענוג פאר אן עכטן פראדוקט (יעדער וואס עפנט דעם קאד קען עס זען). ווען איר עפנט די זייטל
+      דאס ערשטע מאל, וועט איר געבעטן ווערן צו שאפן א פאסווארד פאר דעם אימעיל.
     </div>
   </div>
 </div>
@@ -200,24 +206,57 @@ const CAT_LABELS = {
   shavuos:"שבועות", beinhametzarim:"בין המצרים"
 };
 
-/* ---------------- Demo login (client-side only — see warning banner) ---------------- */
-const DEMO_USER = "admin";
-const DEMO_PASS = "nigun2026";
+/* ---------------- Single-email admin login (client-side only — see warning banner) ---------------- */
+const ALLOWED_EMAIL = "music@koilos.org";
+const PASS_KEY = "nigunim_admin_password"; // stores the password this admin sets on first use
+
+function showError(msg){
+  const err = document.getElementById("error-msg");
+  err.textContent = msg;
+  err.style.display = "block";
+}
+function hideError(){ document.getElementById("error-msg").style.display = "none"; }
+
+function enterDashboard(){
+  document.getElementById("login-wrap").style.display = "none";
+  document.getElementById("dash").style.display = "block";
+  renderLibrary();
+}
 
 document.getElementById("login-btn").addEventListener("click", tryLogin);
 document.getElementById("pass").addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryLogin(); });
 
 function tryLogin(){
-  const u = document.getElementById("user").value.trim();
-  const p = document.getElementById("pass").value;
-  const err = document.getElementById("error-msg");
-  if(u === DEMO_USER && p === DEMO_PASS){
-    err.style.display = "none";
-    document.getElementById("login-wrap").style.display = "none";
-    document.getElementById("dash").style.display = "block";
-    renderLibrary();
+  const email = document.getElementById("user").value.trim().toLowerCase();
+  const pass = document.getElementById("pass").value;
+
+  if(email !== ALLOWED_EMAIL.toLowerCase()){
+    showError("נאר " + ALLOWED_EMAIL + " קען אריינלאגן.");
+    return;
+  }
+  if(!pass){
+    showError("גיט אריין א פאסווארד.");
+    return;
+  }
+
+  const savedPass = localStorage.getItem(PASS_KEY);
+  if(!savedPass){
+    // first time — this becomes the password for this browser
+    if(pass.length < 6){
+      showError("ווען איר שאפט דעם פאסווארד דאס ערשטע מאל, דארף ער זיין לפחות 6 אותיות/ציפערן.");
+      return;
+    }
+    localStorage.setItem(PASS_KEY, pass);
+    hideError();
+    enterDashboard();
+    return;
+  }
+
+  if(pass === savedPass){
+    hideError();
+    enterDashboard();
   } else {
-    err.style.display = "block";
+    showError("פאלשער פאסווארד.");
   }
 }
 
