@@ -6,6 +6,7 @@
 <title>ניגונים — חסידישע ניגונים סטרימינג</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="categories.js"></script>
 <style>
   :root{
     --bg: #1A120B;
@@ -271,7 +272,7 @@
     </div>
     <button class="shuffle-all" id="shuffle-all-btn">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
-    שאפעל אלעס
+      שאפל אלץ
     </button>
   </div>
 
@@ -341,19 +342,11 @@
 
 <script>
 /* ---------------- Data (placeholder tracks — swap via admin page) ---------------- */
-const CAT_LABELS = {
-  all: " אלגעמיינע קאלעקשן",
-  live: "לעבעדיגע ניגונים",
-  studio: "שטייטע ניגונים",
-  instrumental: "בלויז מוזיק",
-  vocal: "וואקאליש",
-  shabbos: "שבת קודש", motzash: "מוצאי שבת", roshchodesh: "ראש חודש",
-  yamimnoraim: "ימים נוראים", sukkos: "סוכות", chanukah: "חנוכה",
-  purim: "פורים", pesach: "פסח", lagbaomer: "ל״ג בעומר",
-  shavuos: "שבועות", beinhametzarim: "בין המצרים"
-};
-const GENERAL_CATS = ["all","live","studio","instrumental","vocal"];
-const MOADIM_CATS = ["shabbos","motzash","roshchodesh","yamimnoraim","sukkos","chanukah","purim","pesach","lagbaomer","shavuos","beinhametzarim"];
+/* Category labels/lists now come from categories.js (shared with admin.html) */
+const CAT_LABELS = { all: "אלע ניגונים" };
+nigunimAllCategories().forEach(c => { CAT_LABELS[c.key] = c.label; });
+const GENERAL_CATS = ["all", ...NIGUNIM_CATEGORIES.general.map(c => c.key)];
+const MOADIM_CATS = NIGUNIM_CATEGORIES.moadim.map(c => c.key);
 
 let tracks = [
   { title:"ניגון של שמחה", tags:["live","vocal"], dur:214, cover:"p1" },
