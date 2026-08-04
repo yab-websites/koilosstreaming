@@ -282,10 +282,6 @@
         <div class="hero-eyebrow">היינטיגע ליכטיגקייט</div>
         <h1>ערליכע נגינה, שיין און פראפעסיאנאל</h1>
         <p>הערט ניגונים פון אלע קאטעגאריעס — לעבעדיגע, שטילע, וואקאליש, אינסטרומענטאל, און נגינה פאר יעדן מועד באזונדער.</p>
-        <button class="shuffle-all" id="hero-shuffle-btn">
-          <svg viewbox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-          שפיל אן פון פארנט
-        </button>
       </div>
       <div class="flame-wrap"><div class="flame" id="hero-flame"><div class="core"></div><div class="wick"></div></div></div>
     </div>
@@ -329,10 +325,7 @@
   </div>
 
   <div class="np-right">
-    <button class="shuffle-indicator" id="shuffle-toggle" title="שאפל">
-      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
-      שאפל
-    </button>
+   
     <div class="vol">
       <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg>
       <div class="bar" id="vol-bar"><div class="bar-fill" id="vol-fill" style="width:70%"></div></div>
@@ -348,22 +341,6 @@ nigunimAllCategories().forEach(c => { CAT_LABELS[c.key] = c.label; });
 const GENERAL_CATS = ["all", ...NIGUNIM_CATEGORIES.general.map(c => c.key)];
 const MOADIM_CATS = NIGUNIM_CATEGORIES.moadim.map(c => c.key);
 
-let tracks = [
-  { title:"ניגון של שמחה", tags:["live","vocal"], dur:214, cover:"p1" },
-  { title:"דבקות", tags:["studio","instrumental"], dur:255, cover:"p2" },
-  { title:"א ליכטיגער טאנץ", tags:["live","instrumental","shabbos"], dur:198, cover:"p3" },
-  { title:"אבינו מלכנו ניגון", tags:["yamimnoraim","vocal"], dur:240, cover:"p4" },
-  { title:"הדלקת נרות", tags:["chanukah","instrumental"], dur:180, cover:"p5" },
-  { title:"שושנת יעקב", tags:["purim","vocal","live"], dur:205, cover:"p6" },
-  { title:"מה נשתנה ניגון", tags:["pesach","instrumental"], dur:190, cover:"p1" },
-  { title:"בר יוחאי", tags:["lagbaomer","vocal"], dur:227, cover:"p2" },
-  { title:"אקדמות ניגון", tags:["shavuos","instrumental"], dur:212, cover:"p3" },
-  { title:"אם אשכחך", tags:["beinhametzarim","vocal","studio"], dur:245, cover:"p4" },
-  { title:"מארש פון שמחת תורה", tags:["sukkos","live"], dur:198, cover:"p5" },
-  { title:"א שטילע ניגון פארן טיש", tags:["studio","shabbos","instrumental"], dur:265, cover:"p6" },
-  { title:"מוצאי שבת ניגון", tags:["motzash","vocal"], dur:188, cover:"p1" },
-  { title:"ראש חודש בענטשן", tags:["roshchodesh","instrumental"], dur:172, cover:"p2" },
-];
 
 function fmt(s){ const m=Math.floor(s/60), r=Math.floor(s%60); return m+":"+String(r).padStart(2,"0"); }
 function label(c){ return CAT_LABELS[c] || c; }
