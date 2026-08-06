@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="yi" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניגונים — חסידישע ניגונים סטרימינג</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&amp;family=Assistant:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="categories.js"></script>
+<script src="storage.js"></script>
+<style>
+  :root{
+    --bg: #1A120B;
+    --surface: #241811;
+    --surface-2: #2E1F15;
+    --line: #3A2A1C;
+    --gold: #C89B3C;
+    --gold-bright: #E4BC5C;
+    --gold-dim: #8F6B24;
+    --wine: #8A3A34;
+    --text: #F3E9DA;
+    --text-muted: #B8A488;
+    --text-faint: #6F5F4D;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Assistant', sans-serif;
+    display:flex;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  ::selection{ background: var(--gold); color:#1A120B; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+  ul{ list-style:none; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width: 268px; flex-shrink:0;
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+    padding: 26px 20px 100px;
+    display:flex; flex-direction:column; gap:26px;
+    overflow-y:auto;
+  }
+  .brand{
+    font-family:'Frank Ruhl Libre', serif;
+    font-weight:900;
+    font-size:1.7rem;
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand .flame{ width:16px; height:16px; flex-shrink:0; }
+  .brand small{ display:block; font-family:'Assistant',sans-serif; font-weight:600; font-size:0.68rem; color:var(--gold); letter-spacing:0.04em; margin-top:2px; }
+
+  .group-label{
+    font-size:0.72rem; color:var(--text-faint);
+    letter-spacing:0.06em; margin-bottom:8px;
+  }
+  nav.cats{ display:flex; flex-direction:column; gap:2px; }
+  nav.cats .item{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 10px; border-radius:7px;
+    color:var(--text-muted); font-size:0.92rem; font-weight:600;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav.cats .item:hover{ background: var(--surface-2); color:var(--text); }
+  nav.cats .item.active{ background: var(--surface-2); color:var(--gold-bright); }
+  nav.cats .count{ font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-faint); }
+
+  .moadim-grid{ display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .moadim-grid button{
+    padding:8px 8px; border-radius:7px;
+    background: var(--surface-2); border:1px solid var(--line);
+    font-size:0.8rem; font-weight:600; color:var(--text-muted);
+    text-align:center; transition: border-color 0.15s, color 0.15s;
+  }
+  .moadim-grid button:hover, .moadim-grid button.active{ border-color:var(--gold-dim); color:var(--gold-bright); }
+
+  .admin-link{
+    margin-top:auto;
+    padding:10px 12px; border-radius:8px;
+    border:1px dashed var(--line);
+    font-size:0.8rem; color:var(--text-faint);
+    text-align:center;
+  }
+  .admin-link:hover{ border-color:var(--gold-dim); color:var(--gold); }
+
+  /* ---------- Main ---------- */
+  .main{ flex:1; display:flex; flex-direction:column; min-width:0; }
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 36px 10px; gap:20px;
+  }
+  .search{
+    flex:1; max-width:420px; display:flex; align-items:center; gap:10px;
+    background: var(--surface); border:1px solid var(--line);
+    border-radius:999px; padding:9px 16px;
+  }
+  .search svg{ width:15px; height:15px; color:var(--text-faint); flex-shrink:0; }
+  .search input{ background:none; border:none; color:var(--text); font-size:0.92rem; width:100%; font-family:'Assistant',sans-serif; }
+  .search input::placeholder{ color:var(--text-faint); }
+
+  .shuffle-all{
+    display:flex; align-items:center; gap:9px;
+    background: var(--gold); color:#221807; font-weight:700;
+    font-size:0.88rem; padding:10px 20px; border-radius:999px;
+    transition: transform 0.15s, background 0.15s;
+    flex-shrink:0;
+  }
+  .shuffle-all:hover{ background: var(--gold-bright); transform: translateY(-1px); }
+  .shuffle-all svg{ width:15px; height:15px; }
+  .shuffle-all:disabled{ opacity:0.4; cursor:not-allowed; transform:none; }
+
+  .content{ flex:1; overflow-y:auto; padding:16px 36px 140px; }
+
+  /* ---------- Track list ---------- */
+  .tracklist{ display:flex; flex-direction:column; }
+  .track-row{
+    display:grid;
+    grid-template-columns: 28px 40px 1fr 130px 60px;
+    align-items:center; gap:16px;
+    padding:10px 12px; border-radius:9px;
+    transition: background 0.12s;
+    cursor:pointer;
+  }
+  .track-row:hover{ background: var(--surface); }
+  .track-row.playing{ background: var(--surface-2); }
+  .track-row.playing .t-title{ color: var(--gold-bright); }
+  .idx{ color:var(--text-faint); font-size:0.82rem; font-family:'IBM Plex Mono',monospace; text-align:center; }
+  .row-play{ display:none; width:20px; height:20px; align-items:center; justify-content:center; color:var(--text); }
+  .track-row:hover .row-play{ display:flex; }
+  .row-play svg{ width:13px; height:13px; }
+  .t-cover{ width:40px; height:40px; border-radius:7px; }
+  .t-title{ font-size:0.92rem; font-weight:700; }
+  .t-tags{ font-size:0.76rem; color:var(--text-muted); margin-top:2px; }
+  .t-cat{ font-size:0.82rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .t-dur{ font-size:0.8rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; text-align:left; }
+
+  .p1{ background: linear-gradient(155deg,#6B3A2E,#251510); }
+  .p2{ background: linear-gradient(155deg,#8A5A2A,#2A1B0C); }
+  .p3{ background: linear-gradient(155deg,#7A2E2E,#280F0F); }
+  .p4{ background: linear-gradient(155deg,#5C4A2E,#211A0F); }
+  .p5{ background: linear-gradient(155deg,#4A3B2A,#1D1712); }
+  .p6{ background: linear-gradient(155deg,#8F6B24,#2E230C); }
+
+  .empty-state{
+    padding:40px 20px; text-align:center; color:var(--text-faint);
+    border:1px dashed var(--line); border-radius:12px; font-size:0.9rem; line-height:1.7;
+  }
+  .empty-state a{ color:var(--gold); font-weight:700; }
+
+  /* ---------- Now playing bar ---------- */
+  .now-playing{
+    position:fixed; right:268px; left:0; bottom:0; height:92px;
+    background: var(--surface); border-top:1px solid var(--line);
+    display:flex; align-items:center; padding:0 24px; gap:24px; z-index:10;
+  }
+  .np-track{ display:flex; align-items:center; gap:12px; width:270px; flex-shrink:0; }
+  .np-cover{ width:52px; height:52px; border-radius:9px; flex-shrink:0; }
+  .np-meta .title{ font-size:0.87rem; font-weight:700; }
+  .np-meta .cat{ font-size:0.76rem; color:var(--text-muted); margin-top:2px; }
+
+  .np-center{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; max-width:560px; margin:0 auto; }
+  .np-controls{ display:flex; align-items:center; gap:20px; }
+  .np-controls button{ color:var(--text-muted); transition: color 0.15s, transform 0.15s; }
+  .np-controls button:hover{ color:var(--text); }
+  .np-controls button:disabled{ opacity:0.35; cursor:not-allowed; }
+  .np-controls svg{ width:16px; height:16px; }
+  .play-toggle{ width:36px; height:36px; border-radius:50%; background:var(--gold); color:#221807 !important; display:flex; align-items:center; justify-content:center; }
+  .play-toggle:hover{ transform:scale(1.05); }
+  .play-toggle:disabled{ background:var(--surface-2); }
+  .play-toggle svg{ width:15px; height:15px; }
+
+  .np-progress{ display:flex; align-items:center; gap:10px; width:100%; direction:ltr; }
+  .np-progress span{ font-size:0.7rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; width:34px; }
+  .bar{ flex:1; height:4px; background:var(--line); border-radius:2px; position:relative; cursor:pointer; }
+  /* fills strictly left → right regardless of page RTL direction */
+  .bar-fill{ position:absolute; left:0; top:0; height:100%; background:var(--gold); border-radius:2px; width:0%; }
+
+  .np-right{ width:200px; flex-shrink:0; display:flex; align-items:center; justify-content:flex-start; gap:14px; }
+  .shuffle-indicator{ display:flex; align-items:center; gap:6px; font-size:0.76rem; color:var(--gold); }
+  .shuffle-indicator svg{ width:14px; height:14px; }
+  .vol{ display:flex; align-items:center; gap:8px; width:90px; direction:ltr; }
+  .vol svg{ width:15px; height:15px; color:var(--text-muted); flex-shrink:0; }
+  .vol .bar{ height:3px; }
+
+  @media (max-width:900px){
+    .sidebar{ display:none; }
+    .now-playing{ right:0; }
+    .np-track{ width:180px; }
+    .np-right{ display:none; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .flame.lit .core{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <svg class="flame" viewbox="0 0 24 24" fill="none"><path d="M12 2c2 3-2 4-2 7a4 4 0 108 0c0-2-1-3-1-3s2 2 2 6a7 7 0 11-14 0c0-5 4-6 7-10z" fill="#C89B3C"></path></svg>
+    <div>ניגונים<small>חסידישע ניגונים סטרימינג</small></div>
+  </div>
+
+  <div>
+    <div class="group-label">אלגעמיינע</div>
+    <nav class="cats" id="general-cats"></nav>
+  </div>
+
+  <div>
+    <div class="group-label">מועדים וזמנים</div>
+    <div class="moadim-grid" id="moadim-cats"></div>
+  </div>
+
+  <a class="admin-link" href="admin.html">🔒 אדמין — אַרויפֿלאָדן פֿיילן</a>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="search">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+      <input type="text" placeholder="זוך א ניגון..." id="search-input">
+    </div>
+    <button class="shuffle-all" id="shuffle-all-btn">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+      שאפל אלץ
+    </button>
+  </div>
+
+  <div class="content">
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="hero-eyebrow">היינטיגע ליכטיגקייט</div>
+        <h1>ערליכע נגינה, שיין און פראפעסיאנאל</h1>
+        <p id="hero-desc">הערט ניגונים פון אלע קאטעגאריעס — שטענדיג אויף שאפל.</p>
+        <button class="shuffle-all" id="hero-shuffle-btn">
+          <svg viewbox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+          שפיל אן
+        </button>
+      </div>
+      <div class="flame-wrap"><div class="flame" id="hero-flame"><div class="core"></div><div class="wick"></div></div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2 id="section-title">אלע ניגונים</h2>
+        <span class="tag" id="track-count"></span>
+      </div>
+      <div class="tracklist" id="tracklist"></div>
+    </div>
+  </div>
+</div>
+
+<div class="now-playing">
+  <div class="np-track">
+    <div class="np-cover p1" id="np-cover"></div>
+    <div class="np-meta">
+      <div class="title" id="np-title">קלייבט אויס א ניגון</div>
+      <div class="cat" id="np-cat">—</div>
+    </div>
+  </div>
+
+  <div class="np-center">
+    <div class="np-controls">
+      <button title="פֿריערדיגע" id="prev-btn" disabled>
+        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M18 6h-2v12h2zm-3.5 6L6 6v12z"></path></svg>
+      </button>
+      <button class="play-toggle" id="play-btn" title="פליי" disabled>
+        <svg id="play-icon" viewbox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+      </button>
+      <button title="קומענדיגע" id="next-btn" disabled>
+        <svg viewbox="0 0 24 24" fill="currentColor"><path d="M8 6h2v12H8zm3.5 6L18 6v12z"></path></svg>
+      </button>
+    </div>
+    <div class="np-progress">
+      <span id="cur-time">0:00</span>
+      <div class="bar" id="seek-bar"><div class="bar-fill" id="seek-fill"></div></div>
+      <span id="tot-time">0:00</span>
+    </div>
+  </div>
+
+  <div class="np-right">
+    <div class="shuffle-indicator" title="שאפל איז שטענדיג אָן">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 3h5v5"></path><path d="M4 20L21 3"></path><path d="M21 16v5h-5"></path><path d="M15 15l6 6"></path><path d="M4 4l5 5"></path></svg>
+      שאפל
+    </div>
+    <div class="vol">
+      <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H3v6h3l5 4V5z"></path><path d="M15.5 8.5a5 5 0 010 7"></path></svg>
+      <div class="bar" id="vol-bar"><div class="bar-fill" id="vol-fill" style="width:70%"></div></div>
+    </div>
+  </div>
+</div>
+
+<audio id="audio-el" preload="metadata"></audio>
+
+<script>
+/* ---------------- Category labels come from categories.js ---------------- */
+const CAT_LABELS = { all: "אלע ניגונים" };
+function nigunimAllCategories(){
+  const g = (NIGUNIM_CATEGORIES && NIGUNIM_CATEGORIES.general) ? NIGUNIM_CATEGORIES.general : [];
+  const m = (NIGUNIM_CATEGORIES && NIGUNIM_CATEGORIES.moadim) ? NIGUNIM_CATEGORIES.moadim : [];
+  return [...g, ...m];
+}
+nigunimAllCategories().forEach(c => { CAT_LABELS[c.key] = c.label; });
+const GENERAL_CATS = ["all", ...((NIGUNIM_CATEGORIES.general||[]).map(c => c.key))];
+const MOADIM_CATS = (NIGUNIM_CATEGORIES.moadim||[]).map(c => c.key);
+
+function fmt(s){ s = Math.max(0, Math.floor(s||0)); const m=Math.floor(s/60), r=s%60; return m+":"+String(r).padStart(2,"0"); }
+function label(c){ return CAT_LABELS[c] || c; }
+
+/* ---------------- Tracks: ONLY what the admin has uploaded (IndexedDB via storage.js) ---------------- */
+let tracks = []; // { id, title, tags, cover, dur, blob, url }
+
+async function loadTracksFromDB(){
+  const rows = await nigunimGetAllTracks(); // [{id,title,tags,cover,dur,blob,addedAt}]
+  rows.sort((a,b)=> a.addedAt - b.addedAt);
+  // revoke previous objectURLs
+  tracks.forEach(t=>{ if(t.url) URL.revokeObjectURL(t.url); });
+  tracks = rows.map(r => ({
+    id: r.id,
+    title: r.title,
+    tags: r.tags && r.tags.length ? r.tags : ["live"],
+    cover: r.cover || "p1",
+    dur: r.dur || 0,
+    blob: r.blob,
+    url: URL.createObjectURL(r.blob)
+  }));
+}
+
+/* ---------------- Sidebar / filtering ---------------- */
+let activeCat = "all";
+
+function catCount(c){ return c==="all" ? tracks.length : tracks.filter(t=>t.tags.includes(c)).length; }
+
+function renderSidebar(){
+  const gen = document.getElementById("general-cats");
+  gen.innerHTML = "";
+  GENERAL_CATS.forEach(c=>{
+    const d = document.createElement("div");
+    d.className = "item" + (c===activeCat ? " active" : "");
+    d.innerHTML = `<span>${label(c)}</span><span class="count">${catCount(c)}</span>`;
+    d.addEventListener("click", ()=> setCategory(c));
+    gen.appendChild(d);
+  });
+  const mo = document.getElementById("moadim-cats");
+  mo.innerHTML = "";
+  MOADIM_CATS.forEach(c=>{
+    const b = document.createElement("button");
+    b.textContent = label(c);
+    b.className = c===activeCat ? "active" : "";
+    b.addEventListener("click", ()=> setCategory(c));
+    mo.appendChild(b);
+  });
+}
+
+function setCategory(c){
+  activeCat = c;
+  document.getElementById("search-input").value = "";
+  document.getElementById("section-title").textContent = label(c);
+  renderSidebar();
+  renderTracks(getFiltered());
+}
+
+function getFiltered(){
+  const q = document.getElementById("search-input").value.toLowerCase().trim();
+  let list = activeCat === "all" ? tracks : tracks.filter(t=>t.tags.includes(activeCat));
+  if(q) list = list.filter(t=> t.title.toLowerCase().includes(q));
+  return list;
+}
+
+/* ---------------- Render tracklist ---------------- */
+const trackListEl = document.getElementById("tracklist");
+
+function renderTracks(list){
+  document.getElementById("track-count").textContent = list.length + " ניגונים";
+  trackListEl.innerHTML = "";
+
+  if(tracks.length === 0){
+    trackListEl.innerHTML = `<div class="empty-state">נאך נישט קיין ניגונים אויף דער זייטל.<br>גייט צום <a href="admin.html">אדמין</a> כדי אַרויפֿצולאָדן די ערשטע ניגונים.</div>`;
+    return;
+  }
+  if(list.length === 0){
+    trackListEl.innerHTML = `<div class="empty-state">קיין ניגונים נישט געפונען אין דער קאטעגאריע.</div>`;
+    return;
+  }
+  list.forEach((t)=>{
+    const realIndex = tracks.indexOf(t);
+    const row = document.createElement("div");
+    row.className = "track-row";
+    row.dataset.index = realIndex;
+    row.innerHTML = `
+      <span class="idx">${list.indexOf(t)+1}</span>
+      <button class="row-play" title="פליי"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="t-cover ${t.cover}"></div>
+      <div class="t-main">
+        <div class="t-title">${t.title}</div>
+        <div class="t-tags">${t.tags.map(label).join(" · ")}</div>
+      </div>
+      <div class="t-cat">${label(t.tags[0])}</div>
+      <div class="t-dur">${t.dur ? fmt(t.dur) : "—"}</div>
+    `;
+    row.querySelector(".t-main").style.gridColumn = "3";
+    row.addEventListener("click", ()=> shuffleAndPlayStartingAt(realIndex));
+    trackListEl.appendChild(row);
+  });
+}
+
+document.getElementById("search-input").addEventListener("input", ()=> renderTracks(getFiltered()));
+
+/* ---------------- Real playback (HTMLAudioElement) — always shuffled and continuous ---------------- */
+const audioEl = document.getElementById("audio-el");
+let currentIndex = -1;
+let playQueue = []; // shuffled list of track indexes, always in effect
+
+const npTitle=document.getElementById("np-title");
+const npCat=document.getElementById("np-cat");
+const npCover=document.getElementById("np-cover");
+const curTimeEl=document.getElementById("cur-time");
+const totTimeEl=document.getElementById("tot-time");
+const seekFill=document.getElementById("seek-fill");
+const seekBar=document.getElementById("seek-bar");
+const playBtn=document.getElementById("play-btn");
+const playIcon=document.getElementById("play-icon");
+const prevBtn=document.getElementById("prev-btn");
+const nextBtn=document.getElementById("next-btn");
+const heroFlame=document.getElementById("hero-flame");
+
+const ICON_PLAY='<path d="M8 5v14l11-7z"/>';
+const ICON_PAUSE='<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+
+function buildShuffledQueue(excludeIndex){
+  const idxs = tracks.map((_,i)=>i);
+  for(let i=idxs.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [idxs[i],idxs[j]]=[idxs[j],idxs[i]];
+  }
+  // avoid immediately repeating the track we just came from, when possible
+  if(excludeIndex!=null && idxs.length>1 && idxs[0]===excludeIndex){
+    [idxs[0], idxs[1]] = [idxs[1], idxs[0]];
+  }
+  return idxs;
+}
+
+function enableTransport(on){
+  playBtn.disabled = !on; prevBtn.disabled = !on; nextBtn.disabled = !on;
+}
+
+function highlightRow(){
+  document.querySelectorAll(".track-row").forEach(r=>{
+    r.classList.toggle("playing", Number(r.dataset.index)===currentIndex);
+  });
+}
+
+function loadAndPlay(index){
+  currentIndex = index;
+  const t = tracks[index];
+  if(!t) return;
+  npTitle.textContent = t.title;
+  npCat.textContent = t.tags.map(label).join(" · ");
+  npCover.className = "np-cover " + t.cover;
+  totTimeEl.textContent = fmt(t.dur);
+  seekFill.style.width = "0%";
+  curTimeEl.textContent = "0:00";
+  highlightRow();
+  enableTransport(true);
+
+  audioEl.src = t.url;
+  const p = audioEl.play();
+  if(p && p.catch) p.catch(()=>{ /* autoplay may be blocked until a user gesture; button still works */ });
+}
+
+/* Creates a shuffled queue and begins playing starting at clickedIndex, while keeping the rest shuffled */
+function shuffleAndPlayStartingAt(clickedIndex){
+  if(tracks.length === 0) return;
+  // create a shuffled queue
+  playQueue = buildShuffledQueue(clickedIndex);
+  // find clickedIndex in the queue (should exist)
+  const pos = playQueue.indexOf(clickedIndex);
+  if(pos > 0){ // bring clicked into first position
+    [playQueue[0], playQueue[pos]] = [playQueue[pos], playQueue[0]];
+  }
+  loadAndPlay(playQueue[0]);
+}
+
+function shuffleAll(){
+  if(tracks.length === 0) return;
+  playQueue = buildShuffledQueue(currentIndex);
+  loadAndPlay(playQueue[0]);
+}
+
+function togglePlay(){
+  if(tracks.length === 0) return;
+  if(currentIndex === -1){ shuffleAll(); return; }
+  if(audioEl.paused) audioEl.play(); else audioEl.pause();
+}
+
+function nextTrack(){
+  if(tracks.length === 0) return;
+  if(playQueue.length === 0) playQueue = buildShuffledQueue(currentIndex);
+  const pos = playQueue.indexOf(currentIndex);
+  const next = playQueue[(pos+1) % playQueue.length];
+  if(pos === playQueue.length-1){
+    // reached end of queue, reshuffle and play next
+    playQueue = buildShuffledQueue(next);
+    loadAndPlay(playQueue[0]);
+  } else {
+    loadAndPlay(next);
+  }
+}
+function prevTrack(){
+  if(tracks.length === 0) return;
+  if(audioEl.currentTime > 3){ audioEl.currentTime = 0; return; }
+  if(playQueue.length === 0) playQueue = buildShuffledQueue(currentIndex);
+  const pos = playQueue.indexOf(currentIndex);
+  const prev = playQueue[(pos-1+playQueue.length) % playQueue.length];
+  loadAndPlay(prev);
+}
+
+audioEl.addEventListener("play", ()=>{
+  playIcon.innerHTML = ICON_PAUSE; playBtn.title = "פויז";
+  heroFlame.classList.add("lit");
+});
+audioEl.addEventListener("pause", ()=>{
+  playIcon.innerHTML = ICON_PLAY; playBtn.title = "פליי";
+  heroFlame.classList.remove("lit");
+});
+audioEl.addEventListener("timeupdate", ()=>{
+  const dur = audioEl.duration || tracks[currentIndex]?.dur || 0;
+  curTimeEl.textContent = fmt(audioEl.currentTime);
+  if(dur) seekFill.style.width = Math.min(100, (audioEl.currentTime/dur)*100) + "%";
+});
+audioEl.addEventListener("loadedmetadata", ()=>{
+  if(isFinite(audioEl.duration)) totTimeEl.textContent = fmt(audioEl.duration);
+});
+audioEl.addEventListener("ended", nextTrack);
+audioEl.addEventListener("error", ()=>{ if(tracks.length>1) nextTrack(); });
+
+playBtn.addEventListener("click", togglePlay);
+nextBtn.addEventListener("click", nextTrack);
+prevBtn.addEventListener("click", prevTrack);
+document.getElementById("shuffle-all-btn").addEventListener("click", shuffleAll);
+document.getElementById("hero-shuffle-btn").addEventListener("click", shuffleAll);
+
+/* seek bar — strictly left → right, independent of page RTL */
+seekBar.addEventListener("click",(e)=>{
+  if(currentIndex===-1 || !audioEl.duration) return;
+  const rect=seekBar.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX-rect.left)/rect.width));
+  audioEl.currentTime = audioEl.duration * pct;
+});
+
+const volBar=document.getElementById("vol-bar");
+const volFill=document.getElementById("vol-fill");
+audioEl.volume = 0.7;
+volBar.addEventListener("click",(e)=>{
+  const rect=volBar.getBoundingClientRect();
+  const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+  volFill.style.width=(pct*100)+"%";
+  audioEl.volume = pct;
+});
+
+trackListEl.addEventListener("click",(e)=>{
+  const btn=e.target.closest(".row-play");
+  if(btn){
+    const row=e.target.closest(".track-row");
+    shuffleAndPlayStartingAt(Number(row.dataset.index));
+  }
+});
+
+/* ---------------- Init ---------------- */
+async function init(){
+  renderSidebar();
+  trackListEl.innerHTML = `<div class="empty-state">לאדט...</div>`;
+  try{
+    await nigunimInit();
+    await loadTracksFromDB();
+  }catch(e){
+    console.error("Could not load tracks from storage:", e);
+  }
+  renderSidebar();
+  renderTracks(getFiltered());
+  const hasTracks = tracks.length > 0;
+  document.getElementById("shuffle-all-btn").disabled = !hasTracks;
+  document.getElementById("hero-shuffle-btn").disabled = !hasTracks;
+  document.getElementById("hero-desc").textContent = hasTracks
+    ? "הערט ניגונים פון אלע קאטעגאריעס — שטענדיג אויף שאפל."
+    : "נאך נישט קיין ניגונים — גייט צום אדמין כדי אַרויפֿצולאָדן.";
+}
+init();
+</script>
+</body>
+</html>

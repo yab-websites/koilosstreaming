@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="yi" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אדמין — ניגונים</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&amp;family=Assistant:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="categories.js"></script>
+<script src="storage.js"></script>
+<style>
+  :root{
+    --bg:#1A120B; --surface:#241811; --surface-2:#2E1F15; --line:#3A2A1C;
+    --gold:#C89B3C; --gold-bright:#E4BC5C; --gold-dim:#8F6B24;
+    --wine:#8A3A34; --text:#F3E9DA; --text-muted:#B8A488; --text-faint:#6F5F4D;
+    --danger:#C0524A;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
+  body{
+    background: var(--bg); color:var(--text); font-family:'Assistant',sans-serif;
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+  a{ color:var(--gold); text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; }
+  input, button{ font-family:inherit; }
+  input:focus-visible, button:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; border-bottom:1px solid var(--line); background:var(--surface);
+  }
+  header .brand{ font-family:'Frank Ruhl Libre',serif; font-weight:900; font-size:1.3rem; }
+  header a.back{ font-size:0.85rem; color:var(--text-muted); }
+  header a.back:hover{ color:var(--gold); }
+
+  /* ---------- Login ---------- */
+  .login-wrap{
+    flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px;
+  }
+  .login-card{
+    width:100%; max-width:380px; background:var(--surface);
+    border:1px solid var(--line); border-radius:16px; padding:36px 32px;
+  }
+  .login-card h1{ font-family:'Frank Ruhl Libre',serif; font-size:1.4rem; margin-bottom:6px; }
+  .login-card p.sub{ color:var(--text-muted); font-size:0.85rem; margin-bottom:26px; line-height:1.5; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:0.82rem; color:var(--text-muted); margin-bottom:6px; font-weight:600; }
+  .field input{
+    width:100%; background:var(--surface-2); border:1px solid var(--line);
+    border-radius:8px; padding:11px 13px; color:var(--text); font-size:0.92rem;
+  }
+  .field input:focus{ border-color:var(--gold-dim); }
+  .login-btn{
+    width:100%; margin-top:8px; background:var(--gold); color:#221807; font-weight:700;
+    font-size:0.92rem; padding:12px; border-radius:9px; transition:background 0.15s;
+  }
+  .login-btn:hover{ background:var(--gold-bright); }
+  .error-msg{
+    background: rgba(192,82,74,0.15); border:1px solid var(--danger); color:#E8ABA5;
+    padding:9px 12px; border-radius:8px; font-size:0.82rem; margin-bottom:16px; display:none;
+  }
+  .demo-note{
+    margin-top:22px; padding:12px 14px; border-radius:9px;
+    background: var(--surface-2); border:1px dashed var(--line);
+    font-size:0.76rem; color:var(--text-faint); line-height:1.55;
+  }
+  .demo-note code{ background:rgba(200,155,60,0.15); padding:1px 5px; border-radius:4px; }
+
+  /* ---------- Dashboard ---------- */
+  .dash{ display:none; flex:1; padding:32px; max-width:900px; margin:0 auto; width:100%; }
+  .dash h1{ font-family:'Frank Ruhl Libre',serif; font-size:1.5rem; margin-bottom:6px; }
+  .dash p.sub{ color:var(--text-muted); font-size:0.88rem; margin-bottom:28px; }
+
+  .folder-group-label{
+    font-size:0.78rem; color:var(--gold); letter-spacing:0.05em; font-weight:700;
+    margin:28px 0 12px;
+  }
+  .folder-group-label:first-child{ margin-top:0; }
+  .folder-section{
+    border:1px solid var(--line); border-radius:14px; background:var(--surface);
+    margin-bottom:16px; overflow:hidden;
+  }
+  .folder-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 18px; cursor:pointer;
+  }
+  .folder-head h3{ font-family:'Frank Ruhl Libre',serif; font-size:1.02rem; font-weight:700; }
+  .folder-head .meta{ display:flex; align-items:center; gap:12px; }
+  .folder-head .count{ font-size:0.76rem; color:var(--text-faint); font-family:'IBM Plex Mono',monospace; }
+  .folder-head .chev{ color:var(--text-faint); transition: transform 0.15s; width:16px; height:16px; }
+  .folder-section.open .chev{ transform: rotate(180deg); }
+  .folder-body{ display:none; padding:0 18px 18px; }
+  .folder-section.open .folder-body{ display:block; }
+
+  .upload-box{
+    border:2px dashed var(--line); border-radius:12px; padding:26px 20px;
+    text-align:center; margin-bottom:14px; transition:border-color 0.15s, background 0.15s;
+  }
+  .upload-box.drag{ border-color:var(--gold); background:var(--surface-2); }
+  .upload-box svg{ width:28px; height:28px; color:var(--gold-dim); margin-bottom:10px; }
+  .upload-box p{ color:var(--text-muted); font-size:0.85rem; margin-bottom:14px; }
+  .upload-box input[type="file"]{ display:none; }
+  .choose-btn{
+    display:inline-block; background:var(--surface-2); border:1px solid var(--line);
+    color:var(--text); font-weight:600; font-size:0.82rem; padding:9px 20px; border-radius:999px;
+  }
+  .choose-btn:hover{ border-color:var(--gold-dim); color:var(--gold-bright); }
+
+  .queue{ display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+  .queue-item{
+    display:flex; align-items:center; gap:12px;
+    background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px;
+  }
+  .queue-item .name{ flex:1; font-size:0.88rem; font-weight:600; }
+  .queue-item .status{ font-size:0.78rem; color:var(--gold); }
+  .queue-item .remove{ color:var(--text-faint); font-size:1.1rem; }
+  .queue-item .remove:hover{ color:var(--danger); }
+
+  .save-btn{
+    background:var(--gold); color:#221807; font-weight:700; font-size:0.9rem;
+    padding:12px 26px; border-radius:9px;
+  }
+  .save-btn:hover{ background:var(--gold-bright); }
+  .save-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .lib-list{ margin-top:36px; }
+  .lib-list h2{ font-family:'Frank Ruhl Libre',serif; font-size:1.1rem; margin-bottom:14px; }
+  .lib-row{
+    display:flex; align-items:center; gap:14px;
+    padding:10px 12px; border-radius:9px; border-bottom:1px solid var(--line);
+  }
+  .lib-row .t{ flex:1; font-size:0.88rem; font-weight:600; }
+  .lib-row .tags{ font-size:0.78rem; color:var(--text-muted); }
+  .lib-row .del{ font-size:0.78rem; color:var(--danger); }
+  .lib-row .del:hover{ text-decoration:underline; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--gold); color:#221807; font-weight:700; font-size:0.85rem;
+    padding:12px 22px; border-radius:999px; opacity:0; pointer-events:none;
+    transition: opacity 0.25s, transform 0.25s;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">🔥 ניגונים — אדמין</div>
+  <a class="back" href="index.html">← צוריק צום זייטל</a>
+</header>
+
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <h1>אריינלאגירן</h1>
+    <p class="sub">נאר פאר דעם אַדמין: גיט א פאסווארד — ווען איר שאפט עס ער סארטירט זיך אין דעם בראַוזער.</p>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div id="login-form">
+      <div class="field">
+        <label for="pass">פאסווארד</label>
+        <input type="password" id="pass" autocomplete="current-password">
+      </div>
+      <button class="login-btn" id="login-btn">אריין</button>
+    </div>
+
+    <div class="demo-note">
+      ⚠️ דאס איז א קליינונג-אדמין אויף דעם קליענט-סייד (localStorage) — נישט זיכער גענוג פאר עכטע פראדוקציע.
+      ווען איר עפנט דאָס ערשט מאל, וועט איר געבעטן ווערן צו שאפן א פאַסוואַרד וואָס וועט זיין סטאָרד אין <code>localStorage</code>.
+    </div>
+  </div>
+</div>
+
+<div class="dash" id="dash">
+  <h1>אַרויפֿלאָדן ניגונים</h1>
+  <p class="sub">יעדער פֿאלדער פון <code>categories.js</code> האָט דאָ זײַן ארויפֿלאָד-קעסטל. טוישט אָדער לייגט צו פֿאָלדערס אין <code>categories.js</code> — זיי וועלן זיך אָטאָמאַטיש ויסצייגן דאָ.</p>
+
+  <div id="folder-sections"></div>
+
+  <div class="lib-list">
+    <h2>יעצטיגע ביבליאטעק (אַרויפֿגעלאָדענע)</h2>
+    <div id="lib-rows"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(async function(){
+  await nigunimInit();
+
+  /* Category label map */
+  const CAT_LABELS = {};
+  (NIGUNIM_CATEGORIES.general || []).forEach(c => CAT_LABELS[c.key] = c.label);
+  (NIGUNIM_CATEGORIES.moadim || []).forEach(c => CAT_LABELS[c.key] = c.label);
+
+  function nigunimLabel(k){ return CAT_LABELS[k] || k; }
+
+  /* ---------------- Password-only admin ---------------- */
+  const PASS_KEY = "nigunim_admin_password";
+  function showError(msg){ const err = document.getElementById("error-msg"); err.textContent = msg; err.style.display = "block"; }
+  function hideError(){ document.getElementById("error-msg").style.display = "none"; }
+  function enterDashboard(){ document.getElementById("login-wrap").style.display = "none"; document.getElementById("dash").style.display = "block"; buildFolderSections(); awaitRenderLibrary(); }
+
+  document.getElementById("login-btn").addEventListener("click", tryLogin);
+  document.getElementById("pass").addEventListener("keydown", (e)=>{ if(e.key==="Enter") tryLogin(); });
+
+  function tryLogin(){
+    const pass = document.getElementById("pass").value;
+    if(!pass){ showError("גיט אריין א פאסווארד."); return; }
+    const savedPass = localStorage.getItem(PASS_KEY);
+    if(!savedPass){
+      if(pass.length < 4){ showError("פאסווארד דארף זיין לפחות 4 אותיות/ציפערן."); return; }
+      localStorage.setItem(PASS_KEY, pass);
+      hideError();
+      enterDashboard();
+      return;
+    }
+    if(pass === savedPass){
+      hideError();
+      enterDashboard();
+    } else {
+      showError("פאלשער פאסווארד.");
+    }
+  }
+
+  /* ---------------- Per-folder upload sections ---------------- */
+  const queues = {};
+  let idCounter = 0;
+
+  function buildFolderSections(){
+    const container = document.getElementById("folder-sections");
+    container.innerHTML = "";
+
+    function renderGroup(groupLabel, cats){
+      const label = document.createElement("div");
+      label.className = "folder-group-label";
+      label.textContent = groupLabel;
+      container.appendChild(label);
+      cats.forEach(cat => container.appendChild(buildFolderSection(cat.key, cat.label)));
+    }
+
+    renderGroup("אלגעמיינע", NIGUNIM_CATEGORIES.general || []);
+    renderGroup("מועדים וזמנים", NIGUNIM_CATEGORIES.moadim || []);
+  }
+
+  function buildFolderSection(catKey, catLabel){
+    queues[catKey] = queues[catKey] || [];
+
+    const section = document.createElement("div");
+    section.className = "folder-section";
+    section.dataset.cat = catKey;
+
+    section.innerHTML = `
+      <div class="folder-head">
+        <h3>${catLabel}</h3>
+        <div class="meta">
+          <span class="count" data-role="lib-count">0 ניגונים שוין דא</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div class="folder-body">
+        <div class="upload-box" data-role="drop-zone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"/></svg>
+          <p>שלעפט אריין אודיא-פֿיילן פאר "${catLabel}" דא, אָדער קליקט צו קלייבן אויס</p>
+          <label class="choose-btn">
+            קלייבט אויס פֿיילן
+            <input type="file" data-role="file-input" accept="audio/*" multiple>
+          </label>
+        </div>
+        <div class="queue" data-role="queue"></div>
+        <button class="save-btn" data-role="save-btn" disabled>לייגט צו צום "${catLabel}" פאלדער</button>
+      </div>
+    `;
+
+    const head = section.querySelector(".folder-head");
+    const dropZone = section.querySelector('[data-role="drop-zone"]');
+    const fileInput = section.querySelector('[data-role="file-input"]');
+    const queueEl = section.querySelector('[data-role="queue"]');
+    const saveBtn = section.querySelector('[data-role="save-btn"]');
+
+    head.addEventListener("click", ()=> section.classList.toggle("open"));
+
+    ["dragover","dragenter"].forEach(ev => dropZone.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.add("drag"); }));
+    ["dragleave","drop"].forEach(ev => dropZone.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); dropZone.classList.remove("drag"); }));
+    dropZone.addEventListener("drop", (e)=>{ handleFiles(catKey, e.dataTransfer.files, queueEl, saveBtn); section.classList.add("open"); });
+    fileInput.addEventListener("click", (e)=> e.stopPropagation());
+    fileInput.addEventListener("change", (e)=>{ handleFiles(catKey, e.target.files, queueEl, saveBtn); section.classList.add("open"); });
+
+    saveBtn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      saveQueue(catKey, queueEl, saveBtn);
+    });
+
+    return section;
+  }
+
+  function handleFiles(catKey, fileList, queueEl, saveBtn){
+    Array.from(fileList).forEach(f=>{
+      queues[catKey].push({ file: f, name: f.name, id: "u" + (idCounter++) });
+    });
+    renderQueue(catKey, queueEl, saveBtn);
+  }
+
+  function renderQueue(catKey, queueEl, saveBtn){
+    const list = queues[catKey];
+    queueEl.innerHTML = "";
+    list.forEach(item=>{
+      const row = document.createElement("div");
+      row.className = "queue-item";
+      row.innerHTML = `<span class="name">${item.name}</span><span class="status">גרייט</span><span class="remove" data-id="${item.id}">✕</span>`;
+      row.querySelector(".remove").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        queues[catKey] = queues[catKey].filter(q => q.id !== item.id);
+        renderQueue(catKey, queueEl, saveBtn);
+      });
+      queueEl.appendChild(row);
+    });
+    saveBtn.disabled = list.length === 0;
+  }
+
+  async function saveQueue(catKey, queueEl, saveBtn){
+    const list = queues[catKey];
+    if(!list.length) return;
+    for(const item of list){
+      const blob = item.file;
+      const title = item.name.replace(/\.[^/.]+$/, "");
+      // compute duration if possible
+      const dur = await window._nigunimComputeDuration(blob).catch(()=>0);
+      const cover = ["p1","p2","p3","p4","p5","p6"][Math.floor(Math.random()*6)];
+      await nigunimAddTrack({
+        title,
+        tags: [catKey],
+        dur,
+        cover,
+        blob,
+        addedAt: Date.now()
+      });
+    }
+    queues[catKey] = [];
+    renderQueue(catKey, queueEl, saveBtn);
+    await awaitRenderLibrary();
+    showToast(`צוגעלייגט צום "${nigunimLabel(catKey)}" פאלדער ✓`);
+  }
+
+  async function awaitRenderLibrary(){
+    const rows = document.getElementById("lib-rows");
+    rows.innerHTML = `<p style="color:var(--text-faint); font-size:0.85rem;">לאדט ...</p>`;
+    const list = await nigunimGetAllTracks();
+    renderLibraryFromList(list);
+  }
+
+  function renderLibraryFromList(list){
+    const rows = document.getElementById("lib-rows");
+    rows.innerHTML = "";
+    if(list.length === 0){
+      rows.innerHTML = `<p style="color:var(--text-faint); font-size:0.85rem;">נאך נישט אַרויפֿגעלאָדן קיין פֿיילן.</p>`;
+    } else {
+      // sort by addedAt ascending
+      list.sort((a,b)=> (a.addedAt||0) - (b.addedAt||0));
+      list.forEach((t, i)=>{
+        const row = document.createElement("div");
+        row.className = "lib-row";
+        row.innerHTML = `
+          <span class="t">${t.title}</span>
+          <span class="tags">${(t.tags||[]).map(c=>nigunimLabel(c)||c).join(" · ")}</span>
+          <span class="del" data-id="${t.id}">אָפּמעקן</span>
+        `;
+        row.querySelector(".del").addEventListener("click", async ()=>{
+          await nigunimDeleteTrack(t.id);
+          await awaitRenderLibrary();
+        });
+        rows.appendChild(row);
+      });
+    }
+    // update folder counters
+    document.querySelectorAll(".folder-section").forEach(section=>{
+      const catKey = section.dataset.cat;
+      const count = (list || []).filter(t => (t.tags||[]).includes(catKey)).length;
+      const countEl = section.querySelector('[data-role="lib-count"]');
+      if(countEl) countEl.textContent = count + " ניגונים שוין דא";
+    });
+  }
+
+  /* Toast */
+  function showToast(msg){
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=> t.classList.remove("show"), 2200);
+  }
+
+  // Initial render if already logged in
+  const savedPass = localStorage.getItem(PASS_KEY);
+  if(savedPass){
+    // hide login if empty password found? still require user to click
+  }
+
+})();
+</script>
+</body>
+</html>
